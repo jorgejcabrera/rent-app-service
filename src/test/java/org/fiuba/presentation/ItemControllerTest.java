@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,7 +40,7 @@ class ItemControllerTest {
     }
 
     @Test
-    public void when_create_an_item_then_it_must_be_created_with_an_id() throws Exception {
+    public void when_execute_a_request_to_create_an_item_then_it_must_be_created_with_an_id() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody();
 
@@ -48,7 +49,18 @@ class ItemControllerTest {
 
         //THEN
         thenTheItemMustContainAnId(response);
+    }
 
+    @Test
+    public void when_execute_a_request_to_create_an_item_then_it_must_contain_a_price() throws Exception {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody();
+
+        // WHEN
+        String response = whenExecuteTheRequestToCreateAnItem(anItemCreationBody);
+
+        //THEN
+        thenTheItemContainsAPrice(response);
     }
 
     @NotNull
@@ -63,14 +75,23 @@ class ItemControllerTest {
     }
 
     private void thenTheItemMustContainAnId(String response) throws JsonProcessingException {
-        Item itemCreated = mapper.readValue(response, Item.class);
+        Item itemCreated = asItem(response);
         assertNotNull(itemCreated.getId());
 
+    }
+
+    private Item asItem(String response) throws JsonProcessingException {
+        return mapper.readValue(response, Item.class);
     }
 
     private String givenAnItemCreationBody() throws JsonProcessingException {
         return mapper.writeValueAsString(new ItemCreationBody("mi item",
                 BigDecimal.valueOf(10.0),
                 2));
+    }
+
+    private void thenTheItemContainsAPrice(String response) throws JsonProcessingException {
+        Item itemCreated = asItem(response);
+        assertEquals(BigDecimal.valueOf(10.0), itemCreated.getPrice());
     }
 }
