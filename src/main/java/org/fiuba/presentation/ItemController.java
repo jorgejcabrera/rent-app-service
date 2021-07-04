@@ -2,6 +2,7 @@ package org.fiuba.presentation;
 
 import org.fiuba.domain.Item;
 import org.fiuba.domain.ItemBuilder;
+import org.fiuba.domain.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +17,14 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class ItemController {
 
     @Autowired
-    private ItemBuilder itemBuilder;
+    private ItemService itemService;
 
-    @PostMapping(value = "/v1/user/{id}/item")//, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/v1/user/{id}/item")
     public ResponseEntity<Item> create(
             @PathVariable("id") Long renterId,
             @RequestBody ItemCreationBody body) {
-        Item newItem = itemBuilder
-                .price(body.price)
-                .rentDaysDuration(body.rentDaysDuration)
-                .description(body.description)
-                .renter(renterId)
-                .build();
+        Item newItem = itemService.create(body, renterId);
+        /*;*/
         return ResponseEntity
                 .status(CREATED)
                 .body(newItem);
