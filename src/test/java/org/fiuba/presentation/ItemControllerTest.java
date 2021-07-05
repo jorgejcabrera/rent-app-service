@@ -2,9 +2,9 @@ package org.fiuba.presentation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.fiuba.domain.Item;
-import org.fiuba.domain.ItemBuilder;
-import org.fiuba.domain.ItemService;
+import org.fiuba.domain.item.Item;
+import org.fiuba.domain.item.ItemBuilder;
+import org.fiuba.domain.item.ItemService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package org.fiuba.domain;
+package org.fiuba.domain.item;
 
 import org.fiuba.presentation.ItemCreationBody;
 

@@ -1,9 +1,7 @@
 package org.fiuba.configuration;
 
-import org.fiuba.domain.ItemBuilder;
-import org.fiuba.domain.ItemBuilderAdapter;
-import org.fiuba.domain.ItemService;
-import org.fiuba.domain.ItemServiceAdapter;
+import org.fiuba.datasource.ItemRepositoryAdapter;
+import org.fiuba.domain.item.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,8 +14,13 @@ public class ItemBeanDefinition {
     }
 
     @Bean
-    public ItemService itemService() {
-        return new ItemServiceAdapter();
+    public ItemRepository itemRepository() {
+        return new ItemRepositoryAdapter();
+    }
+
+    @Bean
+    public ItemService itemService(ItemRepository repository, ItemBuilder builder) {
+        return new ItemServiceAdapter(repository, builder);
     }
 }
 

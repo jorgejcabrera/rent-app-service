@@ -1,11 +1,11 @@
-package org.fiuba.domain;
+package org.fiuba.domain.item;
 
 import org.fiuba.presentation.ItemCreationBody;
 
 public class ItemServiceAdapter implements ItemService {
 
-    private ItemRepository repository;
-    private ItemBuilder builder;
+    private final ItemRepository repository;
+    private final ItemBuilder builder;
 
     public ItemServiceAdapter(
             ItemRepository repository,

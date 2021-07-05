@@ -1,4 +1,4 @@
-package org.fiuba.domain;
+package org.fiuba.domain.item;
 
 import java.math.BigDecimal;
 import java.time.Duration;
