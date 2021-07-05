@@ -14,16 +14,20 @@ repositories {
 dependencies {
     // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
 
     // Jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
+
+    // MySQL
+    runtimeOnly("mysql:mysql-connector-java")
 
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
-    
     testImplementation("org.mockito:mockito-core:3.3.0")
 
 

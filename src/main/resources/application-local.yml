@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/rent_app_db?allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useSSL=false
+    config:
+      minimumIdle: 5
+      maximumPoolSize: 15
+      idleTimeout: 300000
+      connectionTimeout: 8000
+      lifeTime: 420000
+      leakDetectionThreshold: 60000
+  jpa:
+    database: mysql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: create-drop
