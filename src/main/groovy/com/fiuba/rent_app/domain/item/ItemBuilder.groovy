@@ -1,8 +1,7 @@
-package org.fiuba.domain.item;
+package com.fiuba.rent_app.domain.item
 
-import java.math.BigDecimal;
 
-public interface ItemBuilder {
+interface ItemBuilder {
 
     ItemBuilder description(String description);
 

@@ -2,18 +2,16 @@
 # Build stage
 #
 FROM gradle:6.3-jdk11 as compiler
+
 ENV APP_HOME=/usr/app/
 
 WORKDIR $APP_HOME
 
-# copy source code
-COPY . .
-
-# create application jar
-RUN ./gradlew clean build -x test --stacktrace
+# moving jar file
+COPY /build/libs/rent_app-0.0.1-SNAPSHOT.jar /build/libs/rent-app-1.0-SNAPSHOT.jar
 
 # move application jar
-RUN mv ./build/libs/rent-app-1.0-SNAPSHOT.jar service.jar
+RUN mv /build/libs/rent-app-1.0-SNAPSHOT.jar service.jar
 
 #
 # Run stage

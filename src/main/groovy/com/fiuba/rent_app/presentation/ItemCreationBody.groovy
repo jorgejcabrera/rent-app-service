@@ -1,10 +1,8 @@
-package org.fiuba.presentation;
+package com.fiuba.rent_app.presentation
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.math.BigDecimal;
-
-public class ItemCreationBody {
+class ItemCreationBody {
     @JsonProperty("description")
     public String description;
 
@@ -22,3 +20,5 @@ public class ItemCreationBody {
 
     public ItemCreationBody() {}
 }
+
+
