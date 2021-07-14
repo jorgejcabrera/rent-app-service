@@ -6,18 +6,13 @@ import com.fiuba.rent_app.domain.item.ItemBuilderAdapter
 import com.fiuba.rent_app.domain.item.ItemRepository
 import com.fiuba.rent_app.domain.item.ItemService
 import com.fiuba.rent_app.domain.item.ItemServiceAdapter
-import com.fiuba.rent_app.presentation.ItemHttpResponseFactory
-import com.fiuba.rent_app.presentation.ItemHttpResponseFactoryAdapter
+import com.fiuba.rent_app.presentation.item.ItemHttpResponseFactory
+import com.fiuba.rent_app.presentation.item.ItemHttpResponseFactoryAdapter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 class ItemBeanDefinition {
-
-    @Bean
-    ItemBuilder itemBuilder() {
-        return new ItemBuilderAdapter()
-    }
 
     @Bean
     ItemRepository itemRepository() {
@@ -30,7 +25,7 @@ class ItemBeanDefinition {
     }
 
     @Bean
-    ItemService itemService(ItemRepository repository, ItemBuilder builder) {
-        return new ItemServiceAdapter(repository, builder)
+    ItemService itemService(ItemRepository repository) {
+        return new ItemServiceAdapter(repository)
     }
 }

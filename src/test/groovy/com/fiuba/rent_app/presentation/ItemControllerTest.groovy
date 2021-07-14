@@ -3,8 +3,10 @@ package com.fiuba.rent_app.presentation
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.ItemBuilder
+import com.fiuba.rent_app.domain.item.ItemBuilderAdapter
 import com.fiuba.rent_app.domain.item.ItemService
+import com.fiuba.rent_app.presentation.item.ItemCreationBody
+import com.fiuba.rent_app.presentation.item.ItemHttpResponseFactory
 import org.jetbrains.annotations.NotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -37,9 +39,6 @@ class ItemControllerTest {
 
     @Autowired
     private ItemHttpResponseFactory responseFactory
-
-    @Autowired
-    private ItemBuilder itemBuilder
 
     @Autowired
     private ObjectMapper mapper
@@ -108,7 +107,7 @@ class ItemControllerTest {
 
     private Item asItem(String anItemCreationBody, Long renterId) throws JsonProcessingException {
         ItemCreationBody body = mapper.readValue(anItemCreationBody, ItemCreationBody.class);
-        return itemBuilder
+        return new ItemBuilderAdapter()
                 .price(body.price)
                 .rentDaysDuration(body.rentDaysDuration)
                 .description(body.description)

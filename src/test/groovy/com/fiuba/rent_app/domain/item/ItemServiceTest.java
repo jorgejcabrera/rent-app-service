@@ -1,6 +1,6 @@
 package com.fiuba.rent_app.domain.item;
 
-import com.fiuba.rent_app.presentation.ItemCreationBody;
+import com.fiuba.rent_app.presentation.item.ItemCreationBody;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ class ItemServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        service = new ItemServiceAdapter(repository, new ItemBuilderAdapter());
+        service = new ItemServiceAdapter(repository);
     }
 
     @Test

@@ -1,23 +1,20 @@
 package com.fiuba.rent_app.domain.item
 
-import com.fiuba.rent_app.presentation.ItemCreationBody
+import com.fiuba.rent_app.presentation.item.ItemCreationBody
 
 class ItemServiceAdapter implements ItemService {
 
     private final ItemRepository repository
-    private final ItemBuilder builder
 
     ItemServiceAdapter(
-            ItemRepository repository,
-            ItemBuilder builder
+            ItemRepository repository
     ) {
         this.repository = repository
-        this.builder = builder
     }
 
     @Override
     Item create(ItemCreationBody body, Long renterId) {
-        Item item = builder
+        Item item = new ItemBuilderAdapter()
                 .price(body.price)
                 .rentDaysDuration(body.rentDaysDuration)
                 .description(body.description)

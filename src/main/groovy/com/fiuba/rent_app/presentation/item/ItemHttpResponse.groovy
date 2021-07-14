@@ -1,4 +1,4 @@
-package com.fiuba.rent_app.presentation
+package com.fiuba.rent_app.presentation.item
 
 import org.springframework.web.bind.annotation.ResponseBody
 

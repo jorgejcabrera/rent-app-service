@@ -1,4 +1,4 @@
-package com.fiuba.rent_app.presentation
+package com.fiuba.rent_app.presentation.item
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -12,13 +12,14 @@ class ItemCreationBody {
     @JsonProperty("rent_days_duration")
     public Integer rentDaysDuration;
 
-    public ItemCreationBody(String description, BigDecimal price, Integer rentDaysDuration) {
+    ItemCreationBody(String description, BigDecimal price, Integer rentDaysDuration) {
         this.description = description;
         this.price = price;
         this.rentDaysDuration = rentDaysDuration;
     }
 
-    public ItemCreationBody() {}
+    ItemCreationBody() {
+    }
 }
 
 
