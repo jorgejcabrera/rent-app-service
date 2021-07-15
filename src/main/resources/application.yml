@@ -2,7 +2,7 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/rent_app_db?allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://${DB_DNS}/rent_app_db?allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useSSL=false
     config:
       minimumIdle: 5
       maximumPoolSize: 15
@@ -16,4 +16,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update

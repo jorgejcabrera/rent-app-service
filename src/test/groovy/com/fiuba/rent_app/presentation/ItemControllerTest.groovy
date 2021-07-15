@@ -2,9 +2,12 @@ package com.fiuba.rent_app.presentation
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fiuba.rent_app.configuration.ItemBeanDefinition
+import com.fiuba.rent_app.datasource.JpaItemRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.ItemBuilderAdapter
 import com.fiuba.rent_app.domain.item.ItemService
+import com.fiuba.rent_app.presentation.item.ItemController
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import com.fiuba.rent_app.presentation.item.ItemHttpResponseFactory
 import org.jetbrains.annotations.NotNull
@@ -13,8 +16,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
@@ -27,12 +31,16 @@ import static org.mockito.Mockito.verify
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@SpringBootTest
+@WebMvcTest(controllers = [ItemController.class])
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = [ItemController.class, ItemBeanDefinition.class])
 class ItemControllerTest {
 
     @Autowired
     private MockMvc mockMvc
+
+    @MockBean
+    private JpaItemRepository jpaItemRepository
 
     @MockBean
     private ItemService itemService

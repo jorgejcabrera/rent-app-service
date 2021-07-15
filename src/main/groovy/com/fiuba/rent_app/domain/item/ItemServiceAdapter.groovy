@@ -22,4 +22,9 @@ class ItemServiceAdapter implements ItemService {
                 .build()
         return repository.save(item)
     }
+
+    @Override
+    List<Item> listAll() {
+        return repository.findAll()
+    }
 }

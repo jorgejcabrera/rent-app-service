@@ -5,4 +5,6 @@ import org.springframework.http.ResponseEntity
 
 interface ItemHttpResponseFactory {
     ResponseEntity<ItemHttpResponse> from(Item item)
+
+    ResponseEntity<List<ItemHttpResponse>> from(List<Item> items)
 }

@@ -4,9 +4,11 @@ import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.ItemService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -24,5 +26,11 @@ class ItemController {
             @RequestBody ItemCreationBody body) {
         Item newItem = itemService.create(body, renterId)
         return responseFactory.from(newItem)
+    }
+
+    @GetMapping(value = "/v1/items")
+    ResponseEntity<List<ItemHttpResponse>> listAll() {
+        List<Item> allItems = itemService.listAll()
+        return responseFactory.from(allItems)
     }
 }

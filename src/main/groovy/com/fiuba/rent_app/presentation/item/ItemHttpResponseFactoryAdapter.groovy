@@ -4,6 +4,7 @@ import com.fiuba.rent_app.domain.item.Item
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
+import static org.springframework.http.HttpStatus.*
 import static org.springframework.http.HttpStatus.CREATED
 
 class ItemHttpResponseFactoryAdapter implements ItemHttpResponseFactory {
@@ -11,16 +12,35 @@ class ItemHttpResponseFactoryAdapter implements ItemHttpResponseFactory {
     ResponseEntity<ItemHttpResponse> from(Item item) {
         if (item == null) {
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+                    .status(CONFLICT)
                     .body(null)
         }
+        ItemHttpResponse response = asItemHttpResponse(item)
+        return ResponseEntity
+                .status(CREATED)
+                .body(response)
+    }
+
+    @Override
+    ResponseEntity<List<ItemHttpResponse>> from(List<Item> items) {
+        List<ItemHttpResponse> itemHttpResponse = new ArrayList<ItemHttpResponse>()
+        items.forEach { item ->
+            ItemHttpResponse response = asItemHttpResponse(item)
+            itemHttpResponse.add(response)
+        }
+        return ResponseEntity
+                .status(OK)
+                .body(itemHttpResponse)
+    }
+
+    private static ItemHttpResponse asItemHttpResponse(Item item) {
         ItemHttpResponse response = new ItemHttpResponse(
                 id: item.id,
                 description: item.description,
                 price: item.price,
                 rentDuration: item.rentDuration)
-        return ResponseEntity
-                .status(CREATED)
-                .body(response)
+        response
     }
+
+
 }

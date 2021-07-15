@@ -15,4 +15,9 @@ class ItemRepositoryAdapter implements ItemRepository {
     Item save(Item item) {
         return jpaItemRepository.save(item)
     }
+
+    @Override
+    List<Item> findAll() {
+        return jpaItemRepository.findAll()
+    }
 }
