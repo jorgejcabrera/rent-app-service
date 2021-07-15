@@ -9,7 +9,7 @@ import com.fiuba.rent_app.domain.item.ItemBuilderAdapter
 import com.fiuba.rent_app.domain.item.ItemService
 import com.fiuba.rent_app.presentation.item.ItemController
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
-import com.fiuba.rent_app.presentation.item.ItemHttpResponseFactory
+import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
 import org.jetbrains.annotations.NotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

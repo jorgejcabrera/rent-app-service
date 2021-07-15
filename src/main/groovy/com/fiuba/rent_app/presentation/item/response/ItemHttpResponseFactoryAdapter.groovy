@@ -1,11 +1,11 @@
-package com.fiuba.rent_app.presentation.item
+package com.fiuba.rent_app.presentation.item.response
 
 import com.fiuba.rent_app.domain.item.Item
-import org.springframework.http.HttpStatus
+import com.fiuba.rent_app.presentation.item.response.ItemHttpResponse
+import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
 import org.springframework.http.ResponseEntity
 
 import static org.springframework.http.HttpStatus.*
-import static org.springframework.http.HttpStatus.CREATED
 
 class ItemHttpResponseFactoryAdapter implements ItemHttpResponseFactory {
     @Override

@@ -1,4 +1,4 @@
-package com.fiuba.rent_app.presentation.item
+package com.fiuba.rent_app.presentation.item.response
 
 import com.fiuba.rent_app.domain.item.Item
 import org.springframework.http.ResponseEntity
