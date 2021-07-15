@@ -1,8 +1,7 @@
 package com.fiuba.rent_app.configuration
 
 import com.fiuba.rent_app.datasource.ItemRepositoryAdapter
-import com.fiuba.rent_app.domain.item.ItemBuilder
-import com.fiuba.rent_app.domain.item.ItemBuilderAdapter
+import com.fiuba.rent_app.datasource.JpaItemRepository
 import com.fiuba.rent_app.domain.item.ItemRepository
 import com.fiuba.rent_app.domain.item.ItemService
 import com.fiuba.rent_app.domain.item.ItemServiceAdapter
@@ -15,8 +14,8 @@ import org.springframework.context.annotation.Configuration
 class ItemBeanDefinition {
 
     @Bean
-    ItemRepository itemRepository() {
-        return new ItemRepositoryAdapter()
+    ItemRepository itemRepository(JpaItemRepository jpaItemRepository) {
+        return new ItemRepositoryAdapter(jpaItemRepository)
     }
 
     @Bean

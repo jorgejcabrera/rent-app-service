@@ -3,10 +3,10 @@ package com.fiuba.rent_app.domain.item
 import static java.time.Duration.ofDays
 
 class ItemBuilderAdapter implements ItemBuilder {
-    private String description;
-    private BigDecimal price;
-    private Long renter;
-    private Integer rentDaysDuration;
+    private String description
+    private BigDecimal price
+    private Long renter
+    private Integer rentDaysDuration
 
     @Override
     ItemBuilder description(String description) {
