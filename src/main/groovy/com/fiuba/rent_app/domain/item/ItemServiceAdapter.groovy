@@ -1,5 +1,6 @@
 package com.fiuba.rent_app.domain.item
 
+
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 
 class ItemServiceAdapter implements ItemService {

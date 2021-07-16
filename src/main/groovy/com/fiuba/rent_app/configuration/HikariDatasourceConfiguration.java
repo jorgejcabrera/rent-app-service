@@ -38,7 +38,6 @@ class HikariDatasourceConfiguration {
     @Bean
     public DataSource dataSource(DataSourceProperties properties) {
         HikariConfig config = new HikariConfig();
-        System.out.println("El datasour es " + dataSourceUrl);
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
         config.setJdbcUrl(dataSourceUrl);
         config.setUsername(properties.getUsername());

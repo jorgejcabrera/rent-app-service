@@ -1,7 +1,7 @@
 package com.fiuba.rent_app.configuration
 
-import com.fiuba.rent_app.datasource.ItemRepositoryAdapter
-import com.fiuba.rent_app.datasource.JpaItemRepository
+import com.fiuba.rent_app.datasource.item.ItemRepositoryAdapter
+import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.item.ItemRepository
 import com.fiuba.rent_app.domain.item.ItemService
 import com.fiuba.rent_app.domain.item.ItemServiceAdapter

@@ -6,5 +6,4 @@ interface ItemService {
     Item create(ItemCreationBody body, Long renterId)
 
     List<Item> listAll()
-
 }
