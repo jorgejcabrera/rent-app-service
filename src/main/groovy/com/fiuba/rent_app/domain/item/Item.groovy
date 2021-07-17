@@ -6,6 +6,7 @@ import javax.persistence.*
 import java.time.Duration
 
 import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
+import static javax.persistence.CascadeType.ALL
 import static javax.persistence.EnumType.STRING
 
 @Entity(name = "item")
@@ -16,12 +17,12 @@ class Item {
     @Column(name = "id")
     private Long id
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = ALL)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order
 
-    @Column(name = "renter")
-    private Long renter
+    @Column(name = "borrower")
+    private Long borrower
 
     @Column(name = "description")
     private String description
@@ -35,9 +36,9 @@ class Item {
     @Enumerated(STRING)
     private ItemStatus status
 
-    Item(Long renter, String description, BigDecimal price, Duration rentDuration, ItemStatus status) {
+    Item(Long borrower, String description, BigDecimal price, Duration rentDuration, ItemStatus status) {
         this.id = id
-        this.renter = renter
+        this.borrower = borrower
         this.description = description
         this.price = price
         this.rentDuration = rentDuration
@@ -51,7 +52,7 @@ class Item {
     }
 
     Long getRenter() {
-        return renter
+        return borrower
     }
 
     String getDescription() {

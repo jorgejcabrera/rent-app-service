@@ -43,7 +43,7 @@ class ItemBuilderAdapter implements ItemBuilder {
     @Override
     Item build() {
         return new Item(
-                renter: renter,
+                borrower: renter,
                 description: description,
                 price: price,
                 rentDuration: ofDays(rentDaysDuration),

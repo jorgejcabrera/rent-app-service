@@ -22,6 +22,9 @@ class OrderServiceAdapter implements OrderService {
     @Override
     Order createFor(Long itemId, Long renterId) {
         Item item = getItemById(itemId)
+        if (theRenterIsTheItemOwner(item.renter, renterId)) {
+            throw new InvalidRenterException("The renter $renterId is the owner of the $itemId item")
+        }
         item.rent()
         Order order = create(item, renterId)
         orderJpaRepository.save(order)
@@ -38,14 +41,18 @@ class OrderServiceAdapter implements OrderService {
         return item
     }
 
-    private Order create(Item item, long renterId) {
+    private static Order create(Item item, long renterId) {
         LocalDateTime expiredRentDay = calculateExpiredRentDay(item)
         return new Order(renterId, item.renter, expiredRentDay, item)
     }
 
-    private LocalDateTime calculateExpiredRentDay(Item item) {
+    private static LocalDateTime calculateExpiredRentDay(Item item) {
         LocalDateTime expiredRentDay = LocalDateTime.now() + item.rentDuration
         return expiredRentDay
+    }
+
+    private static boolean theRenterIsTheItemOwner(long borrowerId, long renterId) {
+        return borrowerId == renterId
     }
 }
 

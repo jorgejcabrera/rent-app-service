@@ -4,6 +4,7 @@ import com.fiuba.rent_app.datasource.item.ItemNotFoundException
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.ItemRepository
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
@@ -30,13 +31,15 @@ class OrderServiceTest {
     private OrderService service
 
     Long itemId = 1L
+    Long borrowerId = 2L
     Long renterId = 1L
     Duration rentDuration = ofDays(2)
     Item taladro = new Item(
             status: AVAILABLE,
             rentDuration: rentDuration,
             price: valueOf(10L),
-            description: "taladro")
+            description: "taladro",
+            borrower: borrowerId)
 
     @BeforeEach
     void setUp() {
@@ -86,6 +89,16 @@ class OrderServiceTest {
         thenTheExpiredRentDateWasSuccessfullyCalculated(createdOrder)
     }
 
+    @Test
+    void when_the_renter_is_the_item_owner_then_it_must_thrown_an_exception() {
+        // GIVEN
+        givenAnAvailableItem()
+
+        // WHEN
+        assertThrows(InvalidRenterException.class) {
+            service.createFor(itemId, borrowerId)
+        }
+    }
 
     void givenAnNoneExistentItem() {
         whenever(itemRepository.findById(itemId)).thenThrow(new ItemNotFoundException("Item does not exist"))
