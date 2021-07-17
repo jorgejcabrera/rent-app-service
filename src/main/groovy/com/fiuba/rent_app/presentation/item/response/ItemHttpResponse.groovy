@@ -6,7 +6,7 @@ import java.time.Duration
 
 @ResponseBody
 class ItemHttpResponse {
-    UUID id
+    Long id
     String description
     BigDecimal price
     Duration rentDuration

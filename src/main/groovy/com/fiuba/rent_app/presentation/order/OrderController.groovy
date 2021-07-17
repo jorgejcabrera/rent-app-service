@@ -20,9 +20,9 @@ class OrderController {
     @Autowired
     private OrderHttpResponseFactory responseFactory
 
-    @PostMapping(value = "/v1/item/{itemId}/renting")
+    @PostMapping(value = "/v1/item/{itemId}/order")
     ResponseEntity<OrderHttpResponse> rent(
-            @PathVariable("itemId") UUID itemId,
+            @PathVariable("itemId") Long itemId,
             @RequestHeader("x-caller-id") Long callerId
     ) {
         Order order = orderService.createFor(itemId, callerId)

@@ -24,7 +24,7 @@ class ItemServiceTest {
     }
 
     @Test
-    public void when_the_service_create_an_item_then_the_repository_must_be_used_to_save_it() {
+    public void when_the_service_creates_an_item_then_the_repository_must_be_used_to_save_it() {
         // GIVEN
         ItemCreationBody body = givenAItemCreationBody();
 

@@ -5,5 +5,5 @@ interface ItemRepository {
 
     List<Item> findAll()
 
-    Item findById(UUID itemId)
+    Item findById(Long itemId)
 }

@@ -34,7 +34,4 @@ class ItemController {
         List<Item> allItems = itemService.listAll()
         return responseFactory.from(allItems)
     }
-
-
-
 }

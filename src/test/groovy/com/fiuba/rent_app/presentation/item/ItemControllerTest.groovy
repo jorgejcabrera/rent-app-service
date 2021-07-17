@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
+import static java.math.BigDecimal.valueOf
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.mockito.ArgumentMatchers.any
@@ -80,7 +81,6 @@ class ItemControllerTest {
         thenTheItemMustContainAnId(response)
     }
 
-
     @Test
     void when_execute_a_request_to_create_an_item_then_it_must_contain_a_price() throws Exception {
         // GIVEN
@@ -107,7 +107,7 @@ class ItemControllerTest {
 
 
     private void givenAServiceThatCreateAnItem(String anItemCreationBody, Long renterId) throws JsonProcessingException {
-        Item newItem = asItem(anItemCreationBody, renterId);
+        Item newItem = asItem(anItemCreationBody, renterId)
         whenever(itemService.create(any(), any())).thenReturn(newItem)
     }
 
@@ -115,9 +115,10 @@ class ItemControllerTest {
         ItemCreationBody body = mapper.readValue(anItemCreationBody, ItemCreationBody.class);
         return new ItemBuilderAdapter()
                 .price(body.price)
-                .rentDaysDuration(body.rentDaysDuration)
+                .rentDaysDuration(body.rentingDays)
                 .description(body.description)
                 .renter(renterId)
+                .id(1L)
                 .build()
     }
 
@@ -132,9 +133,9 @@ class ItemControllerTest {
 
     private String givenAnItemCreationBody() throws JsonProcessingException {
         return mapper.writeValueAsString(new ItemCreationBody(
-                "mi item",
-                BigDecimal.valueOf(10.0),
-                2))
+                description: "mi item",
+                price: valueOf(10.0),
+                rentingDays: 2))
     }
 
     private void thenTheUserServiceWasUsed() {
@@ -143,6 +144,6 @@ class ItemControllerTest {
 
     private void thenTheItemContainsAPrice(String response) throws JsonProcessingException {
         Item itemCreated = asItem(response);
-        assertEquals(BigDecimal.valueOf(10.0), itemCreated.getPrice())
+        assertEquals(valueOf(10.0), itemCreated.getPrice())
     }
 }

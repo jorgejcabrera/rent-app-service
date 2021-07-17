@@ -61,10 +61,8 @@ class OrderControllerTest {
     }
 
     private ResultActions whenExecuteARequestToCreateAnOrder() {
-
-        String itemId = UUID.randomUUID().toString()
         this.mockMvc.perform(MockMvcRequestBuilders
-                .post("/v1/item/$itemId/renting")
+                .post("/v1/item/1/order")
                 .header("x-caller-id", 1)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON))

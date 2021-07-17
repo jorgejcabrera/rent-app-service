@@ -3,14 +3,16 @@ package com.fiuba.rent_app.domain.item
 
 interface ItemBuilder {
 
-    ItemBuilder description(String description);
+    ItemBuilder id(Long id)
 
-    ItemBuilder price(BigDecimal price);
+    ItemBuilder description(String description)
 
-    ItemBuilder renter(Long renter);
+    ItemBuilder price(BigDecimal price)
 
-    ItemBuilder rentDaysDuration(int daysDuration);
+    ItemBuilder renter(Long renter)
 
-    Item build();
+    ItemBuilder rentDaysDuration(int daysDuration)
+
+    Item build()
 
 }

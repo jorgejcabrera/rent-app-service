@@ -5,15 +5,16 @@ import com.fiuba.rent_app.domain.order.Order
 import javax.persistence.*
 import java.time.Duration
 
-import static com.fiuba.rent_app.domain.item.ItemStatus.AVAILABLE
 import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
+import static javax.persistence.EnumType.STRING
 
 @Entity(name = "item")
 @Table(name = "item")
 class Item {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private UUID id
+    private Long id
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
@@ -31,21 +32,21 @@ class Item {
     @Column(name = "rent_duration")
     private Duration rentDuration
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private ItemStatus status
 
-    Item(UUID id, Long renter, String description, BigDecimal price, Duration rentDuration) {
+    Item(Long renter, String description, BigDecimal price, Duration rentDuration, ItemStatus status) {
         this.id = id
         this.renter = renter
         this.description = description
         this.price = price
         this.rentDuration = rentDuration
-        this.status = AVAILABLE
+        this.status = status
     }
 
     Item() {}
 
-    UUID getId() {
+    Long getId() {
         return id
     }
 

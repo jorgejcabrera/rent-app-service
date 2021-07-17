@@ -12,7 +12,7 @@ class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private UUID id
+    private Long id
 
     @OneToOne(mappedBy = "order")
     private Item item

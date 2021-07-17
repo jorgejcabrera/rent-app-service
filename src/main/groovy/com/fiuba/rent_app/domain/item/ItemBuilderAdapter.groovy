@@ -1,12 +1,20 @@
 package com.fiuba.rent_app.domain.item
 
+import static com.fiuba.rent_app.domain.item.ItemStatus.*
 import static java.time.Duration.ofDays
 
 class ItemBuilderAdapter implements ItemBuilder {
     private String description
     private BigDecimal price
     private Long renter
+    private Long id
     private Integer rentDaysDuration
+
+    @Override
+    ItemBuilder id(Long id) {
+        this.id = id
+        return this
+    }
 
     @Override
     ItemBuilder description(String description) {
@@ -34,11 +42,12 @@ class ItemBuilderAdapter implements ItemBuilder {
 
     @Override
     Item build() {
-        UUID itemId = UUID.randomUUID()
-        return new Item(itemId,
-                renter,
-                description,
-                price,
-                ofDays(rentDaysDuration))
+        return new Item(
+                renter: renter,
+                description: description,
+                price: price,
+                rentDuration: ofDays(rentDaysDuration),
+                status: AVAILABLE,
+                id: id)
     }
 }

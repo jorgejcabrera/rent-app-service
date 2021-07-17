@@ -17,7 +17,7 @@ class ItemServiceAdapter implements ItemService {
     Item create(ItemCreationBody body, Long renterId) {
         Item item = new ItemBuilderAdapter()
                 .price(body.price)
-                .rentDaysDuration(body.rentDaysDuration)
+                .rentDaysDuration(body.rentingDays)
                 .description(body.description)
                 .renter(renterId)
                 .build()

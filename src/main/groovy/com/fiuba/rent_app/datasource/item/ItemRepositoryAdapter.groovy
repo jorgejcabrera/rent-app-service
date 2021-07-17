@@ -22,7 +22,7 @@ class ItemRepositoryAdapter implements ItemRepository {
     }
 
     @Override
-    Item findById(UUID itemId) {
+    Item findById(Long itemId) {
         return jpaItemRepository.findById(itemId).orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
     }
 }

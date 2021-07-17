@@ -1,6 +1,7 @@
 package com.fiuba.rent_app.domain.order
 
 import com.fiuba.rent_app.datasource.item.ItemNotFoundException
+import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.ItemRepository
 import org.junit.jupiter.api.BeforeEach
@@ -24,11 +25,11 @@ class OrderServiceTest {
     private ItemRepository itemRepository
 
     @Mock
-    private OrderRepository orderRepository
+    private JpaOrderRepository jpaOrderRepository
 
     private OrderService service
 
-    UUID itemId = UUID.randomUUID()
+    Long itemId = 1L
     Long renterId = 1L
     Duration rentDuration = ofDays(2)
     Item taladro = new Item(
@@ -40,11 +41,11 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this)
-        service = new OrderServiceAdapter(itemRepository, orderRepository)
+        service = new OrderServiceAdapter(itemRepository, jpaOrderRepository)
     }
 
     @Test
-    void when_create_an_order_for_an_nonexistent_item_then_it_must_throw_an_exception() {
+    void when_create_an_order_for_a_nonexistent_item_then_it_must_throw_an_exception() {
         // GIVEN
         givenAnNoneExistentItem()
 
@@ -58,11 +59,11 @@ class OrderServiceTest {
         givenARentedItem()
 
         // THEN
-        assertThrows(ItemIsNotAvailableForOrderedException.class) { service.createFor(itemId, renterId) }
+        assertThrows(ItemIsNotAvailableForOrderingException.class) { service.createFor(itemId, renterId) }
     }
 
     @Test
-    void when_order_an_available_item_then_the_a_valid_order_must_be_returned() {
+    void when_ordering_an_available_item_then_the_a_valid_order_must_be_returned() {
         // GIVEN
         givenAnAvailableItem()
 
@@ -74,7 +75,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void when_order_an_available_item_then_the_expired_date_must_be_indicated_in_the_order_info() {
+    void when_ordering_an_available_item_then_the_returning_date_must_be_indicated_in_the_order_info() {
         // GIVEN
         givenAnAvailableItem()
 

@@ -4,22 +4,21 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 class ItemCreationBody {
     @JsonProperty("description")
-    public String description;
+    public String description
 
     @JsonProperty("price")
-    public BigDecimal price;
+    public BigDecimal price
 
-    @JsonProperty("rent_days_duration")
-    public Integer rentDaysDuration;
+    @JsonProperty("renting_days")
+    public Integer rentingDays
 
-    ItemCreationBody(String description, BigDecimal price, Integer rentDaysDuration) {
-        this.description = description;
-        this.price = price;
-        this.rentDaysDuration = rentDaysDuration;
+    ItemCreationBody(String description, BigDecimal price, Integer rentingDays) {
+        this.description = description
+        this.price = price
+        this.rentingDays = rentingDays
     }
 
-    ItemCreationBody() {
-    }
+    ItemCreationBody() {}
 }
 
 
