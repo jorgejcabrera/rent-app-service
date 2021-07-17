@@ -4,20 +4,10 @@ import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.ItemRepository
 
-import java.time.LocalDateTime
-
 class OrderServiceAdapter implements OrderService {
 
     private ItemRepository itemRepository
-    private JpaOrderRepository orderJpaRepository
-
-    OrderServiceAdapter(
-            ItemRepository itemRepository,
-            JpaOrderRepository orderJpaRepository
-    ) {
-        this.itemRepository = itemRepository
-        this.orderJpaRepository = orderJpaRepository
-    }
+    private JpaOrderRepository orderRepository
 
     @Override
     Order createFor(Long itemId, Long renterId) {
@@ -26,11 +16,12 @@ class OrderServiceAdapter implements OrderService {
             throw new InvalidRenterException("The renter $renterId is the owner of the $itemId item")
         }
         item.rent()
-        Order order = create(item, renterId)
-        orderJpaRepository.save(order)
-        /** Inline reference is not possible here, because the repository is a mock in
-         * the unit test and I don't know the order creation details*/
-        return order
+        Order order = new OrderBuilderAdapter()
+                .renter(renterId)
+                .item(item)
+                .build()
+        return orderRepository.save(order)
+
     }
 
     private Item getItemById(Long itemId) {
@@ -39,16 +30,6 @@ class OrderServiceAdapter implements OrderService {
             throw new ItemIsNotAvailableForOrderingException("The item $itemId is not avilable.")
         }
         return item
-    }
-
-    private static Order create(Item item, long renterId) {
-        LocalDateTime expiredRentDay = calculateExpiredRentDay(item)
-        return new Order(renterId, item.renter, expiredRentDay, item)
-    }
-
-    private static LocalDateTime calculateExpiredRentDay(Item item) {
-        LocalDateTime expiredRentDay = LocalDateTime.now() + item.rentDuration
-        return expiredRentDay
     }
 
     private static boolean theRenterIsTheItemOwner(long borrowerId, long renterId) {

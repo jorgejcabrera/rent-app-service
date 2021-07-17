@@ -4,7 +4,6 @@ import com.fiuba.rent_app.datasource.item.ItemNotFoundException
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.ItemRepository
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
@@ -19,6 +18,8 @@ import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static java.math.BigDecimal.valueOf
 import static java.time.Duration.ofDays
 import static org.junit.jupiter.api.Assertions.*
+import static org.mockito.ArgumentMatchers.any
+
 
 class OrderServiceTest {
 
@@ -26,7 +27,7 @@ class OrderServiceTest {
     private ItemRepository itemRepository
 
     @Mock
-    private JpaOrderRepository jpaOrderRepository
+    private JpaOrderRepository orderRepository
 
     private OrderService service
 
@@ -44,7 +45,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this)
-        service = new OrderServiceAdapter(itemRepository, jpaOrderRepository)
+        service = new OrderServiceAdapter(itemRepository: itemRepository, orderRepository: orderRepository)
     }
 
     @Test
@@ -69,6 +70,7 @@ class OrderServiceTest {
     void when_ordering_an_available_item_then_the_a_valid_order_must_be_returned() {
         // GIVEN
         givenAnAvailableItem()
+        givenAnOrderSuccessfullySaved()
 
         // WHEN
         Order createdOrder = service.createFor(itemId, renterId)
@@ -81,6 +83,7 @@ class OrderServiceTest {
     void when_ordering_an_available_item_then_the_returning_date_must_be_indicated_in_the_order_info() {
         // GIVEN
         givenAnAvailableItem()
+        givenAnOrderSuccessfullySaved()
 
         // WHEN
         Order createdOrder = service.createFor(itemId, renterId)
@@ -121,5 +124,9 @@ class OrderServiceTest {
         assertEquals(expectedDate.dayOfMonth, order.expiredRentDay.dayOfMonth)
         assertEquals(expectedDate.month, order.expiredRentDay.month)
         assertEquals(expectedDate.year, order.expiredRentDay.year)
+    }
+
+    void givenAnOrderSuccessfullySaved() {
+        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderAdapter().item(taladro).renter(renterId).build())
     }
 }

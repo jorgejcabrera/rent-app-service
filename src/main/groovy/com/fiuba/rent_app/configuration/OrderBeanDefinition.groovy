@@ -19,6 +19,6 @@ class OrderBeanDefinition {
 
     @Bean
     OrderService orderService(ItemRepository itemRepository, JpaOrderRepository jpaOrderRepository) {
-        return new OrderServiceAdapter(itemRepository, jpaOrderRepository)
+        return new OrderServiceAdapter(itemRepository: itemRepository, orderRepository: jpaOrderRepository)
     }
 }
