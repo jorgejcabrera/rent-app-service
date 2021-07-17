@@ -4,6 +4,10 @@ import com.fiuba.rent_app.datasource.item.ItemNotFoundException
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.ItemRepository
+import com.fiuba.rent_app.domain.order.rule.InvalidRenterException
+import com.fiuba.rent_app.domain.order.rule.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.rule.ItemMustBeAvailableForOrdering
+import com.fiuba.rent_app.domain.order.rule.ItemRenterAndOwnerMustBeDifferent
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
@@ -45,7 +49,14 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this)
-        service = new OrderServiceAdapter(itemRepository: itemRepository, orderRepository: orderRepository)
+        service = new OrderServiceAdapter(
+                itemRepository: itemRepository,
+                orderRepository: orderRepository,
+                orderCreationRules: [
+                        new ItemMustBeAvailableForOrdering(),
+                        new ItemRenterAndOwnerMustBeDifferent()
+                ]
+        )
     }
 
     @Test
@@ -108,7 +119,7 @@ class OrderServiceTest {
     }
 
     void givenARentedItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(new Item(status: RENTED))
+        whenever(itemRepository.findById(itemId)).thenReturn(new Item(status: RENTED, rentDuration: ofDays(1)))
     }
 
     void givenAnAvailableItem() {

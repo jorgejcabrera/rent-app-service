@@ -25,7 +25,7 @@ class OrderBuilderAdapter implements OrderBuilder {
     @Override
     Order build() {
         LocalDateTime expiredRentDay = calculateExpiredRentDay(item)
-        return new Order(renter, item.renter, expiredRentDay, item)
+        return new Order(renter, item.borrower, expiredRentDay, item)
     }
 
     private static LocalDateTime calculateExpiredRentDay(Item item) {

@@ -51,7 +51,7 @@ class Item {
         return id
     }
 
-    Long getRenter() {
+    Long getBorrower() {
         return borrower
     }
 

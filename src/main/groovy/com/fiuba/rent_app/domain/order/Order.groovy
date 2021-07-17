@@ -34,4 +34,12 @@ class Order {
     }
 
     Order() {}
+
+    Item getItem() {
+        return this.item
+    }
+
+    Long getRenter() {
+        return this.renter
+    }
 }
