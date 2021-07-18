@@ -2,7 +2,7 @@ package com.fiuba.rent_app.presentation.order
 
 import com.fiuba.rent_app.configuration.OrderBeanDefinition
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.OrderService
+import com.fiuba.rent_app.domain.order.service.OrderService
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponse
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponseFactory
 import org.junit.jupiter.api.BeforeEach

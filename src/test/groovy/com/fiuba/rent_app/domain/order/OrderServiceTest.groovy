@@ -1,13 +1,16 @@
 package com.fiuba.rent_app.domain.order
 
-import com.fiuba.rent_app.datasource.item.ItemNotFoundException
+
+import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.ItemRepository
-import com.fiuba.rent_app.domain.order.rule.InvalidRenterException
-import com.fiuba.rent_app.domain.order.rule.ItemIsNotAvailableForOrderingException
-import com.fiuba.rent_app.domain.order.rule.ItemMustBeAvailableForOrdering
-import com.fiuba.rent_app.domain.order.rule.ItemRenterAndOwnerMustBeDifferent
+import com.fiuba.rent_app.domain.order.builder.OrderBuilderAdapter
+import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
+import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.builder.rule.ItemMustBeAvailableForOrdering
+import com.fiuba.rent_app.domain.order.builder.rule.ItemRenterAndOwnerMustBeDifferent
+import com.fiuba.rent_app.domain.order.service.OrderService
+import com.fiuba.rent_app.domain.order.service.OrderServiceAdapter
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
@@ -24,11 +27,10 @@ import static java.time.Duration.ofDays
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.ArgumentMatchers.any
 
-
 class OrderServiceTest {
 
     @Mock
-    private ItemRepository itemRepository
+    private JpaItemRepository itemRepository
 
     @Mock
     private JpaOrderRepository orderRepository
@@ -119,11 +121,11 @@ class OrderServiceTest {
     }
 
     void givenARentedItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(new Item(status: RENTED, rentDuration: ofDays(1)))
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(new Item(status: RENTED, rentDuration: ofDays(1))))
     }
 
     void givenAnAvailableItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(taladro)
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(taladro))
     }
 
     static void thenTheOrderWasSuccessfullyCreated(Order order) {

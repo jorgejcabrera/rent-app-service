@@ -1,7 +1,7 @@
 package com.fiuba.rent_app.presentation.order
 
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.OrderService
+import com.fiuba.rent_app.domain.order.service.OrderService
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponse
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponseFactory
 import org.springframework.beans.factory.annotation.Autowired

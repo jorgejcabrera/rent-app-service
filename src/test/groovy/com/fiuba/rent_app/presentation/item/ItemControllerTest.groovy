@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fiuba.rent_app.configuration.ItemBeanDefinition
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.ItemBuilderAdapter
-import com.fiuba.rent_app.domain.item.ItemService
+import com.fiuba.rent_app.domain.item.builder.ItemBuilderAdapter
+import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
 import org.jetbrains.annotations.NotNull
 import org.junit.jupiter.api.BeforeEach

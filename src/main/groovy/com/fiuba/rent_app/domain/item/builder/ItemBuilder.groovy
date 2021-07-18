@@ -1,4 +1,6 @@
-package com.fiuba.rent_app.domain.item
+package com.fiuba.rent_app.domain.item.builder
+
+import com.fiuba.rent_app.domain.item.Item
 
 
 interface ItemBuilder {

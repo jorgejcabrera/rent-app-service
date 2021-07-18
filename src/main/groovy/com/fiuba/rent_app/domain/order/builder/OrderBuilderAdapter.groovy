@@ -1,6 +1,8 @@
-package com.fiuba.rent_app.domain.order
+package com.fiuba.rent_app.domain.order.builder
 
 import com.fiuba.rent_app.domain.item.Item
+import com.fiuba.rent_app.domain.order.Order
+import com.fiuba.rent_app.domain.order.builder.OrderBuilder
 
 import java.time.LocalDateTime
 

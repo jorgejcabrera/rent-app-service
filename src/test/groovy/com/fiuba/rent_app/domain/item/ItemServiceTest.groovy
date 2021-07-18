@@ -1,12 +1,17 @@
 package com.fiuba.rent_app.domain.item;
 
+import com.fiuba.rent_app.datasource.item.JpaItemRepository;
+import com.fiuba.rent_app.domain.item.service.ItemService;
+import com.fiuba.rent_app.domain.item.service.ItemServiceAdapter;
 import com.fiuba.rent_app.presentation.item.ItemCreationBody;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import java.math.BigDecimal;
+
 import static com.nhaarman.mockitokotlin2.VerificationKt.verify;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -14,13 +19,13 @@ import static org.mockito.Mockito.times;
 class ItemServiceTest {
 
     @Mock
-    private ItemRepository repository;
+    private JpaItemRepository repository;
     private ItemService service;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        service = new ItemServiceAdapter(repository);
+        service = new ItemServiceAdapter(itemRepository: repository);
     }
 
     @Test

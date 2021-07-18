@@ -1,17 +1,13 @@
-package com.fiuba.rent_app.domain.item
+package com.fiuba.rent_app.domain.item.service
 
-
+import com.fiuba.rent_app.datasource.item.JpaItemRepository
+import com.fiuba.rent_app.domain.item.Item
+import com.fiuba.rent_app.domain.item.builder.ItemBuilderAdapter
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 
 class ItemServiceAdapter implements ItemService {
 
-    private final ItemRepository repository
-
-    ItemServiceAdapter(
-            ItemRepository repository
-    ) {
-        this.repository = repository
-    }
+    private JpaItemRepository itemRepository
 
     @Override
     Item create(ItemCreationBody body, Long renterId) {
@@ -21,11 +17,11 @@ class ItemServiceAdapter implements ItemService {
                 .description(body.description)
                 .renter(renterId)
                 .build()
-        return repository.save(item)
+        return itemRepository.save(item)
     }
 
     @Override
     List<Item> listAll() {
-        return repository.findAll()
+        return itemRepository.findAll()
     }
 }

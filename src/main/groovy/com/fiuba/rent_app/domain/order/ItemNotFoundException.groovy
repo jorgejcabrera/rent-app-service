@@ -1,4 +1,4 @@
-package com.fiuba.rent_app.datasource.item
+package com.fiuba.rent_app.domain.order
 
 class ItemNotFoundException extends RuntimeException {
 

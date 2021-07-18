@@ -36,14 +36,14 @@ class Item {
     @Enumerated(STRING)
     private ItemStatus status
 
-    Item(Long borrower, String description, BigDecimal price, Duration rentDuration, ItemStatus status) {
+    /*Item(Long borrower, String description, BigDecimal price, Duration rentDuration, ItemStatus status) {
         this.id = id
         this.borrower = borrower
         this.description = description
         this.price = price
         this.rentDuration = rentDuration
         this.status = status
-    }
+    }*/
 
     Item() {}
 

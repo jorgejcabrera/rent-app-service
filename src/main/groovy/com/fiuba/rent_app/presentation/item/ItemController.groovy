@@ -1,7 +1,7 @@
 package com.fiuba.rent_app.presentation.item
 
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.ItemService
+import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponse
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,6 +1,9 @@
-package com.fiuba.rent_app.domain.item
+package com.fiuba.rent_app.domain.item.builder
 
-import static com.fiuba.rent_app.domain.item.ItemStatus.*
+import com.fiuba.rent_app.domain.item.Item
+import com.fiuba.rent_app.domain.item.builder.ItemBuilder
+
+import static com.fiuba.rent_app.domain.item.ItemStatus.AVAILABLE
 import static java.time.Duration.ofDays
 
 class ItemBuilderAdapter implements ItemBuilder {
