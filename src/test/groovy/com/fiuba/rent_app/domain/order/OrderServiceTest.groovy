@@ -1,6 +1,6 @@
 package com.fiuba.rent_app.domain.order
 
-
+import com.fiuba.rent_app.ItemFactory
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
@@ -15,14 +15,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-
 import java.time.Duration
 import java.time.LocalDateTime
-
-import static com.fiuba.rent_app.domain.item.ItemStatus.AVAILABLE
 import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
-import static java.math.BigDecimal.valueOf
 import static java.time.Duration.ofDays
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.ArgumentMatchers.any
@@ -40,13 +36,8 @@ class OrderServiceTest {
     Long itemId = 1L
     Long borrowerId = 2L
     Long renterId = 1L
-    Duration rentDuration = ofDays(2)
-    Item taladro = new Item(
-            status: AVAILABLE,
-            rentDuration: rentDuration,
-            price: valueOf(10L),
-            description: "taladro",
-            borrower: borrowerId)
+    Item drill = ItemFactory.availableDrillWith(borrowerId)
+    Duration rentDuration = drill.rentDuration
 
     @BeforeEach
     void setUp() {
@@ -125,7 +116,7 @@ class OrderServiceTest {
     }
 
     void givenAnAvailableItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(taladro))
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(drill))
     }
 
     static void thenTheOrderWasSuccessfullyCreated(Order order) {
@@ -140,6 +131,6 @@ class OrderServiceTest {
     }
 
     void givenAnOrderSuccessfullySaved() {
-        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderAdapter().item(taladro).renter(renterId).build())
+        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderAdapter().item(drill).renter(renterId).build())
     }
 }
