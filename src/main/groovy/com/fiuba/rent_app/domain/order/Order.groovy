@@ -5,16 +5,19 @@ import com.fiuba.rent_app.domain.item.Item
 import javax.persistence.*
 import java.time.LocalDateTime
 
+import static javax.persistence.CascadeType.ALL
+import static javax.persistence.GenerationType.AUTO
+
 @Entity(name = "orders")
 @Table(name = "orders")
 class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = AUTO)
     @Column(name = "id")
     private Long id
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "order", cascade = ALL)
     private Item item
 
     @Column(name = "renter_id")

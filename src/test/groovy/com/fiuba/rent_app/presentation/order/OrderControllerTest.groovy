@@ -1,10 +1,14 @@
 package com.fiuba.rent_app.presentation.order
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fiuba.rent_app.configuration.OrderBeanDefinition
 import com.fiuba.rent_app.domain.order.Order
+import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.service.OrderService
+import com.fiuba.rent_app.presentation.ExceptionHandlerAdvice
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponse
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponseFactory
+import org.aspectj.lang.annotation.Before
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
@@ -13,10 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 import java.time.LocalDateTime
 
@@ -36,11 +42,14 @@ class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc
 
+    @Autowired
+    private ObjectMapper objectMapper
+
     @MockBean
     private OrderService orderService
 
     @MockBean
-    private OrderHttpResponseFactory orderHttpResponseFactory
+    private OrderHttpResponseFactory responseFactory
 
     @BeforeEach
     private void setUp() {
@@ -63,7 +72,7 @@ class OrderControllerTest {
     private ResultActions whenExecuteARequestToCreateAnOrder() {
         this.mockMvc.perform(MockMvcRequestBuilders
                 .post("/v1/item/1/order")
-                .header("x-caller-id", 1)
+                .header("x-caller-id", 2)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -80,7 +89,7 @@ class OrderControllerTest {
     }
 
     void givenASuccessfullyHttpResponse() {
-        whenever(orderHttpResponseFactory.from(any()))
+        whenever(responseFactory.from(any()))
                 .thenReturn(ResponseEntity.status(CREATED)
                         .body(new OrderHttpResponse()))
     }

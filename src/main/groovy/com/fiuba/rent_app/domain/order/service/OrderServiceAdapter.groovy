@@ -22,7 +22,7 @@ class OrderServiceAdapter implements OrderService {
                 .item(item)
                 .build()
         orderCreationRules.forEach(rule -> rule.evaluate(order))
-        item.rent()
+        item.rentWith(order)
         return orderRepository.save(order)
     }
 }

@@ -19,34 +19,34 @@ import static org.mockito.Mockito.times;
 class ItemServiceTest {
 
     @Mock
-    private JpaItemRepository repository;
-    private ItemService service;
+    private JpaItemRepository repository
+    private ItemService service
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        service = new ItemServiceAdapter(itemRepository: repository);
+        service = new ItemServiceAdapter(itemRepository: repository)
     }
 
     @Test
     void when_the_service_creates_an_item_then_the_repository_must_be_used_to_save_it() {
         // GIVEN
-        ItemCreationBody body = givenAItemCreationBody();
+        ItemCreationBody body = givenAItemCreationBody()
 
         // WHEN
-        service.create(body, 1L);
+        service.create(body, 1L)
 
         // THEN
-        theItemWasSaved();
+        theItemWasSaved()
     }
 
     private void theItemWasSaved() {
-        verify(repository, times(1)).save(any());
+        verify(repository, times(1)).save(any())
     }
 
     @NotNull
     private ItemCreationBody givenAItemCreationBody() {
-        return new ItemCreationBody("", BigDecimal.valueOf(10L), 1);
+        return new ItemCreationBody("", BigDecimal.valueOf(10L), 1)
     }
 
 }
