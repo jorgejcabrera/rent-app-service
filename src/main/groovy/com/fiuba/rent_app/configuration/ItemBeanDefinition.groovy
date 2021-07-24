@@ -1,8 +1,7 @@
 package com.fiuba.rent_app.configuration
 
-
+import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
-
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.item.service.ItemServiceAdapter
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
@@ -19,7 +18,13 @@ class ItemBeanDefinition {
     }
 
     @Bean
-    ItemService itemService(JpaItemRepository repository) {
-        return new ItemServiceAdapter(itemRepository: repository)
+    ItemService itemService(
+            JpaItemRepository itemRepository,
+            JpaAccountRepository accountRepository
+    ) {
+        return new ItemServiceAdapter(
+                itemRepository: itemRepository,
+                accountRepository: accountRepository
+        )
     }
 }

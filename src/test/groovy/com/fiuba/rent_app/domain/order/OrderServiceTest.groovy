@@ -9,17 +9,18 @@ import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
 import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.builder.rule.ItemMustBeAvailableForOrdering
 import com.fiuba.rent_app.domain.order.builder.rule.ItemRenterAndOwnerMustBeDifferent
+import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import com.fiuba.rent_app.domain.order.service.OrderService
 import com.fiuba.rent_app.domain.order.service.OrderServiceAdapter
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+
 import java.time.Duration
 import java.time.LocalDateTime
-import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
+
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
-import static java.time.Duration.ofDays
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.ArgumentMatchers.any
 
@@ -46,8 +47,8 @@ class OrderServiceTest {
                 itemRepository: itemRepository,
                 orderRepository: orderRepository,
                 orderCreationRules: [
-                        new ItemMustBeAvailableForOrdering(),
-                        new ItemRenterAndOwnerMustBeDifferent()
+                        new ItemRenterAndOwnerMustBeDifferent(),
+                        new ItemMustBeAvailableForOrdering()
                 ]
         )
     }
@@ -112,7 +113,7 @@ class OrderServiceTest {
     }
 
     void givenARentedItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(new Item(status: RENTED, rentDuration: ofDays(1))))
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(ItemFactory.rentedDrillWith(2L)))
     }
 
     void givenAnAvailableItem() {
@@ -131,6 +132,6 @@ class OrderServiceTest {
     }
 
     void givenAnOrderSuccessfullySaved() {
-        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderAdapter().item(drill).renter(renterId).build())
+        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderAdapter().item(drill).renterId(renterId).build())
     }
 }

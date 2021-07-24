@@ -7,7 +7,7 @@ class ItemRenterAndOwnerMustBeDifferent implements OrderCreationRule {
 
     @Override
     void evaluate(Order order) {
-        if (order.getItem().getBorrower() == order.getRenter()) {
+        if (order.getItem().getBorrowerId() == order.getRenter()) {
             throw new InvalidRenterException("The renter ${order.getRenter()} can't be the owner of the ${order.getItem().getId()} item")
         }
     }

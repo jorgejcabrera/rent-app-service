@@ -1,7 +1,7 @@
 package com.fiuba.rent_app.domain.item.builder
 
+import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.builder.ItemBuilder
 
 import static com.fiuba.rent_app.domain.item.ItemStatus.AVAILABLE
 import static java.time.Duration.ofDays
@@ -9,7 +9,7 @@ import static java.time.Duration.ofDays
 class ItemBuilderAdapter implements ItemBuilder {
     private String description
     private BigDecimal price
-    private Long renter
+    private Account borrower
     private Long id
     private Integer rentDaysDuration
 
@@ -32,8 +32,8 @@ class ItemBuilderAdapter implements ItemBuilder {
     }
 
     @Override
-    ItemBuilder renter(Long renter) {
-        this.renter = renter
+    ItemBuilder borrower(Account borrower) {
+        this.borrower = borrower
         return this
     }
 
@@ -46,7 +46,7 @@ class ItemBuilderAdapter implements ItemBuilder {
     @Override
     Item build() {
         return new Item(
-                borrower: renter,
+                account: borrower,
                 description: description,
                 price: price,
                 rentDuration: ofDays(rentDaysDuration),

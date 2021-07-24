@@ -1,6 +1,6 @@
 package com.fiuba.rent_app.domain.order.service
 
-import com.fiuba.rent_app.domain.order.ItemNotFoundException
+
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
@@ -16,9 +16,10 @@ class OrderServiceAdapter implements OrderService {
 
     @Override
     Order createFor(Long itemId, Long renterId) {
-        Item item = itemRepository.findById(itemId).orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
         Order order = new OrderBuilderAdapter()
-                .renter(renterId)
+                .renterId(renterId)
                 .item(item)
                 .build()
         orderCreationRules.forEach(rule -> rule.evaluate(order))

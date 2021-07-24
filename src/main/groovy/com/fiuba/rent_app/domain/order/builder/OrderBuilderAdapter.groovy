@@ -2,7 +2,6 @@ package com.fiuba.rent_app.domain.order.builder
 
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.builder.OrderBuilder
 
 import java.time.LocalDateTime
 
@@ -10,7 +9,7 @@ class OrderBuilderAdapter implements OrderBuilder {
 
     private Item item
 
-    private Long renter
+    private Long renterId
 
     @Override
     OrderBuilder item(Item item) {
@@ -19,15 +18,20 @@ class OrderBuilderAdapter implements OrderBuilder {
     }
 
     @Override
-    OrderBuilder renter(Long renterId) {
-        this.renter = renterId
+    OrderBuilder renterId(Long renterId) {
+        this.renterId = renterId
         return this
     }
 
     @Override
     Order build() {
         LocalDateTime expiredRentDay = calculateExpiredRentDay(item)
-        return new Order(renter, item.borrower, expiredRentDay, item)
+        return new Order(
+                renterId: renterId,
+                borrower: item.borrowerId,
+                expiredRentDay: expiredRentDay,
+                item: item
+        )
     }
 
     private static LocalDateTime calculateExpiredRentDay(Item item) {

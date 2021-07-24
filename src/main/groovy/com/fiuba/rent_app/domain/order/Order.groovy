@@ -21,7 +21,7 @@ class Order {
     private Item item
 
     @Column(name = "renter_id")
-    private Long renter
+    private Long renterId
 
     @Column(name = "borrower_id")
     private Long borrower
@@ -30,7 +30,7 @@ class Order {
     private LocalDateTime expiredRentDay
 
     Order(Long renter, Long borrower, LocalDateTime expiredRentDay, Item item) {
-        this.renter = renter
+        this.renterId = renter
         this.borrower = borrower
         this.expiredRentDay = expiredRentDay
         this.item = item
@@ -43,6 +43,6 @@ class Order {
     }
 
     Long getRenter() {
-        return this.renter
+        return this.renterId
     }
 }

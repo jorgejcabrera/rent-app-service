@@ -1,5 +1,6 @@
 package com.fiuba.rent_app.domain.item
 
+import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.order.Order
 
 import javax.persistence.*
@@ -21,8 +22,9 @@ class Item {
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order
 
-    @Column(name = "borrower")
-    private Long borrower
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    Account account
 
     @Column(name = "description")
     private String description
@@ -42,8 +44,8 @@ class Item {
         return id
     }
 
-    Long getBorrower() {
-        return borrower
+    Long getBorrowerId() {
+        return this.account.getId()
     }
 
     String getDescription() {
@@ -59,7 +61,7 @@ class Item {
     }
 
     void rentWith(Order order) {
-        this.order = order
+        //this.order = order
         this.status = RENTED
     }
 

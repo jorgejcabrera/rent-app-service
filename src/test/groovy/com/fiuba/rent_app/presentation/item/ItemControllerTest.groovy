@@ -7,6 +7,7 @@ import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.builder.ItemBuilderAdapter
 import com.fiuba.rent_app.domain.item.service.ItemService
+import com.fiuba.rent_app.presentation.item.response.ItemHttpResponse
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
 import org.jetbrains.annotations.NotNull
 import org.junit.jupiter.api.BeforeEach
@@ -59,7 +60,7 @@ class ItemControllerTest {
     void when_execute_a_request_to_create_an_item_then_the_item_service_must_be_used() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
-        givenAServiceThatCreateAnItem(anItemCreationBody, 1L)
+        givenAServiceThatCreateAnItem(anItemCreationBody)
 
         // WHEN
         whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
@@ -72,7 +73,7 @@ class ItemControllerTest {
     void when_execute_a_request_to_create_an_item_then_it_must_be_created_with_an_id() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
-        givenAServiceThatCreateAnItem(anItemCreationBody, 1L)
+        givenAServiceThatCreateAnItem(anItemCreationBody)
 
         // WHEN
         String response = whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
@@ -85,7 +86,7 @@ class ItemControllerTest {
     void when_execute_a_request_to_create_an_item_then_it_must_contain_a_price() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
-        givenAServiceThatCreateAnItem(anItemCreationBody, 1L)
+        givenAServiceThatCreateAnItem(anItemCreationBody)
 
         // WHEN
         String response = whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
@@ -106,28 +107,27 @@ class ItemControllerTest {
     }
 
 
-    private void givenAServiceThatCreateAnItem(String anItemCreationBody, Long renterId) throws JsonProcessingException {
-        Item newItem = asItem(anItemCreationBody, renterId)
+    private void givenAServiceThatCreateAnItem(String anItemCreationBody) throws JsonProcessingException {
+        Item newItem = bodyAsItem(anItemCreationBody)
         whenever(itemService.create(any(), any())).thenReturn(newItem)
     }
 
-    private Item asItem(String anItemCreationBody, Long renterId) throws JsonProcessingException {
+    private Item bodyAsItem(String anItemCreationBody) throws JsonProcessingException {
         ItemCreationBody body = mapper.readValue(anItemCreationBody, ItemCreationBody.class);
         return new ItemBuilderAdapter()
                 .price(body.price)
                 .rentDaysDuration(body.rentingDays)
                 .description(body.description)
-                .renter(renterId)
                 .id(1L)
                 .build()
     }
 
     private void thenTheItemMustContainAnId(String response) throws JsonProcessingException {
-        Item itemCreated = asItem(response)
+        Item itemCreated = responseAsItem(response)
         assertNotNull(itemCreated.getId())
     }
 
-    private Item asItem(String response) throws JsonProcessingException {
+    private Item responseAsItem(String response) throws JsonProcessingException {
         return mapper.readValue(response, Item.class)
     }
 
@@ -143,7 +143,7 @@ class ItemControllerTest {
     }
 
     private void thenTheItemContainsAPrice(String response) throws JsonProcessingException {
-        Item itemCreated = asItem(response);
-        assertEquals(valueOf(10.0), itemCreated.getPrice())
+        ItemHttpResponse itemCreated = mapper.readValue(response, ItemHttpResponse.class)
+        assertEquals(valueOf(10.0), itemCreated.price)
     }
 }

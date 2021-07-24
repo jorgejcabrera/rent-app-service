@@ -1,5 +1,6 @@
 package com.fiuba.rent_app.domain.item.builder
 
+import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
 
 
@@ -11,7 +12,7 @@ interface ItemBuilder {
 
     ItemBuilder price(BigDecimal price)
 
-    ItemBuilder renter(Long renter)
+    ItemBuilder borrower(Account renter)
 
     ItemBuilder rentDaysDuration(int daysDuration)
 
