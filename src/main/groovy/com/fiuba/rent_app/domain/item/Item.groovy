@@ -18,8 +18,7 @@ class Item {
     @Column(name = "id")
     private Long id
 
-    @OneToOne(cascade = ALL)
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "item", cascade = ALL)
     private Order order
 
     @ManyToOne
@@ -44,7 +43,7 @@ class Item {
         return id
     }
 
-    Long getBorrowerId() {
+    Long getRenterId() {
         return this.account.getId()
     }
 
@@ -60,8 +59,7 @@ class Item {
         return rentDuration
     }
 
-    void rentWith(Order order) {
-        //this.order = order
+    void rentWith() {
         this.status = RENTED
     }
 

@@ -7,7 +7,7 @@ interface OrderBuilder {
 
     OrderBuilder item(Item item)
 
-    OrderBuilder renterId(Long renterId)
+    OrderBuilder borrowerId(Long borrowerId)
 
     Order build()
 }

@@ -3,6 +3,7 @@ package com.fiuba.rent_app.presentation
 import com.fiuba.rent_app.domain.item.service.ItemBorrowerDoesNotExistException
 import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
 import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -29,5 +30,11 @@ class ExceptionHandlerAdvice {
     ResponseEntity<ErrorResponse> handle(ItemBorrowerDoesNotExistException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(errorCode: "invalid_borrower", message: exception.message))
+    }
+
+    @ExceptionHandler(ItemNotFoundException.class)
+    ResponseEntity<ErrorResponse> handle(ItemNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(errorCode: "invalid_item", message: exception.message))
     }
 }

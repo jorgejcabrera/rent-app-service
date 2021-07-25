@@ -9,7 +9,7 @@ class OrderBuilderAdapter implements OrderBuilder {
 
     private Item item
 
-    private Long renterId
+    private Long borrowerId
 
     @Override
     OrderBuilder item(Item item) {
@@ -18,8 +18,8 @@ class OrderBuilderAdapter implements OrderBuilder {
     }
 
     @Override
-    OrderBuilder renterId(Long renterId) {
-        this.renterId = renterId
+    OrderBuilder borrowerId(Long borrowerId) {
+        this.borrowerId = borrowerId
         return this
     }
 
@@ -27,8 +27,8 @@ class OrderBuilderAdapter implements OrderBuilder {
     Order build() {
         LocalDateTime expiredRentDay = calculateExpiredRentDay(item)
         return new Order(
-                renterId: renterId,
-                borrower: item.borrowerId,
+                lender: item.renterId,
+                borrower: borrowerId,
                 expiredRentDay: expiredRentDay,
                 item: item
         )

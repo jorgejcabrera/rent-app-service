@@ -1,6 +1,5 @@
 package com.fiuba.rent_app.domain.order.service
 
-
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
@@ -15,15 +14,15 @@ class OrderServiceAdapter implements OrderService {
     private List<OrderCreationRule> orderCreationRules
 
     @Override
-    Order createFor(Long itemId, Long renterId) {
+    Order createFor(Long itemId, Long borrowerId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
         Order order = new OrderBuilderAdapter()
-                .renterId(renterId)
+                .borrowerId(borrowerId)
                 .item(item)
                 .build()
         orderCreationRules.forEach(rule -> rule.evaluate(order))
-        item.rentWith(order)
+        item.rentWith()
         return orderRepository.save(order)
     }
 }

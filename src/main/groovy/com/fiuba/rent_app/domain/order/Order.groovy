@@ -17,11 +17,12 @@ class Order {
     @Column(name = "id")
     private Long id
 
-    @OneToOne(mappedBy = "order", cascade = ALL)
+    @OneToOne(cascade = ALL)
+    @JoinColumn(name = "item_id", referencedColumnName = "id")
     private Item item
 
-    @Column(name = "renter_id")
-    private Long renterId
+    @Column(name = "lender_id")
+    private Long lender
 
     @Column(name = "borrower_id")
     private Long borrower
@@ -29,8 +30,8 @@ class Order {
     @Column(name = "expired_rent_day")
     private LocalDateTime expiredRentDay
 
-    Order(Long renter, Long borrower, LocalDateTime expiredRentDay, Item item) {
-        this.renterId = renter
+    Order(Long lender, Long borrower, LocalDateTime expiredRentDay, Item item) {
+        this.lender = lender
         this.borrower = borrower
         this.expiredRentDay = expiredRentDay
         this.item = item
@@ -42,7 +43,11 @@ class Order {
         return this.item
     }
 
-    Long getRenter() {
-        return this.renterId
+    Long getLender() {
+        return this.lender
+    }
+
+    Long getBorrower() {
+        return this.borrower
     }
 }

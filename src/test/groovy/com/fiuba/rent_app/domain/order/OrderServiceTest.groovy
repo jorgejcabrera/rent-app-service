@@ -8,7 +8,7 @@ import com.fiuba.rent_app.domain.order.builder.OrderBuilderAdapter
 import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
 import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.builder.rule.ItemMustBeAvailableForOrdering
-import com.fiuba.rent_app.domain.order.builder.rule.ItemRenterAndOwnerMustBeDifferent
+import com.fiuba.rent_app.domain.order.builder.rule.ItemBorrowerAndOwnerMustBeDifferent
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import com.fiuba.rent_app.domain.order.service.OrderService
 import com.fiuba.rent_app.domain.order.service.OrderServiceAdapter
@@ -36,8 +36,8 @@ class OrderServiceTest {
 
     Long itemId = 1L
     Long borrowerId = 2L
-    Long renterId = 1L
-    Item drill = ItemFactory.availableDrillWith(borrowerId)
+    Long lenderId = 1L
+    Item drill = ItemFactory.availableDrillWith(lenderId)
     Duration rentDuration = drill.rentDuration
 
     @BeforeEach
@@ -47,7 +47,7 @@ class OrderServiceTest {
                 itemRepository: itemRepository,
                 orderRepository: orderRepository,
                 orderCreationRules: [
-                        new ItemRenterAndOwnerMustBeDifferent(),
+                        new ItemBorrowerAndOwnerMustBeDifferent(),
                         new ItemMustBeAvailableForOrdering()
                 ]
         )
@@ -59,7 +59,7 @@ class OrderServiceTest {
         givenAnNoneExistentItem()
 
         // THEN
-        assertThrows(ItemNotFoundException.class) { service.createFor(itemId, renterId) }
+        assertThrows(ItemNotFoundException.class) { service.createFor(itemId, borrowerId) }
     }
 
     @Test
@@ -68,17 +68,17 @@ class OrderServiceTest {
         givenARentedItem()
 
         // THEN
-        assertThrows(ItemIsNotAvailableForOrderingException.class) { service.createFor(itemId, renterId) }
+        assertThrows(ItemIsNotAvailableForOrderingException.class) { service.createFor(itemId, borrowerId) }
     }
 
     @Test
-    void when_ordering_an_available_item_then_the_a_valid_order_must_be_returned() {
+    void when_ordering_an_available_item_then_a_valid_order_must_be_returned() {
         // GIVEN
         givenAnAvailableItem()
         givenAnOrderSuccessfullySaved()
 
         // WHEN
-        Order createdOrder = service.createFor(itemId, renterId)
+        Order createdOrder = service.createFor(itemId, borrowerId)
 
         // THEN
         thenTheOrderWasSuccessfullyCreated(createdOrder)
@@ -91,20 +91,20 @@ class OrderServiceTest {
         givenAnOrderSuccessfullySaved()
 
         // WHEN
-        Order createdOrder = service.createFor(itemId, renterId)
+        Order createdOrder = service.createFor(itemId, borrowerId)
 
         // THEN
         thenTheExpiredRentDateWasSuccessfullyCalculated(createdOrder)
     }
 
     @Test
-    void when_the_renter_is_the_item_owner_then_it_must_thrown_an_exception() {
+    void when_the_borrower_is_the_item_owner_then_it_must_thrown_an_exception() {
         // GIVEN
         givenAnAvailableItem()
 
         // WHEN
         assertThrows(InvalidRenterException.class) {
-            service.createFor(itemId, borrowerId)
+            service.createFor(itemId, lenderId)
         }
     }
 
@@ -113,7 +113,7 @@ class OrderServiceTest {
     }
 
     void givenARentedItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(ItemFactory.rentedDrillWith(2L)))
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(ItemFactory.rentedDrillWith(lenderId)))
     }
 
     void givenAnAvailableItem() {
@@ -132,6 +132,6 @@ class OrderServiceTest {
     }
 
     void givenAnOrderSuccessfullySaved() {
-        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderAdapter().item(drill).renterId(renterId).build())
+        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderAdapter().item(drill).borrowerId(borrowerId).build())
     }
 }

@@ -23,9 +23,9 @@ class OrderController {
     @PostMapping(value = "/v1/item/{itemId}/order")
     ResponseEntity<OrderHttpResponse> rent(
             @PathVariable("itemId") Long itemId,
-            @RequestHeader("x-caller-id") Long callerId
+            @RequestHeader("x-caller-id") Long borrowerId
     ) {
-        Order order = orderService.createFor(itemId, callerId)
+        Order order = orderService.createFor(itemId, borrowerId)
         return responseFactory.from(order)
     }
 }
