@@ -10,6 +10,8 @@ interface ItemBuilder {
 
     ItemBuilder description(String description)
 
+    ItemBuilder title(String title)
+
     ItemBuilder price(BigDecimal price)
 
     ItemBuilder borrower(Account renter)

@@ -7,11 +7,11 @@ import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.item.service.ItemServiceAdapter
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import org.jetbrains.annotations.NotNull
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static com.nhaarman.mockitokotlin2.VerificationKt.verify
 import static org.mockito.ArgumentMatchers.any
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.times
 class ItemServiceTest {
 
     @Mock
-    private JpaItemRepository repository
+    private JpaItemRepository itemRepository
 
     @Mock
     private JpaAccountRepository accountRepository
@@ -29,7 +29,7 @@ class ItemServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        service = new ItemServiceAdapter(itemRepository: repository, accountRepository: accountRepository)
+        service = new ItemServiceAdapter(itemRepository: itemRepository, accountRepository: accountRepository)
     }
 
     @Test
@@ -45,8 +45,20 @@ class ItemServiceTest {
         theItemWasSaved()
     }
 
+    @Test
+    void when_list_all_the_items_then_only_the_available_items_must_be_retrieved() {
+        // GIVEN
+        givenSomeSavedItems()
+
+        // WHEN
+        def items = service.listAll()
+
+        // THEN
+        Assertions.assertEquals(2, items.size())
+    }
+
     private void theItemWasSaved() {
-        verify(repository, times(1)).save(any())
+        verify(itemRepository, times(1)).save(any())
     }
 
     @NotNull
@@ -56,5 +68,14 @@ class ItemServiceTest {
 
     void givenAnAccount() {
         whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: 1L, email: "jocabrera@fi.uba.ar")))
+    }
+
+    def givenSomeSavedItems() {
+        List<Item> items = [
+                new Item(title: "zapatilla", status: ItemStatus.RENTED),
+                new Item(title: "play station 5"),
+                new Item(title: "computadora")
+        ]
+        whenever(itemRepository.findAll()).thenReturn(items)
     }
 }

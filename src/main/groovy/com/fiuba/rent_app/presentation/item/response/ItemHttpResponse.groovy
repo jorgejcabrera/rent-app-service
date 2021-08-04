@@ -8,6 +8,7 @@ import java.time.Duration
 class ItemHttpResponse {
     Long id
     String description
+    String title
     BigDecimal price
     Duration rentDuration
 }

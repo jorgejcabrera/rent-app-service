@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 import static javax.persistence.CascadeType.ALL
 import static javax.persistence.GenerationType.AUTO
 
+// revisar cardinalidad many to onde desde order validando
 @Entity(name = "orders")
 @Table(name = "orders")
 class Order {

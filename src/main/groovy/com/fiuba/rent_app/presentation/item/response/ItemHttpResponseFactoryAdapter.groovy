@@ -37,6 +37,7 @@ class ItemHttpResponseFactoryAdapter implements ItemHttpResponseFactory {
         ItemHttpResponse response = new ItemHttpResponse(
                 id: item.id,
                 description: item.description,
+                title: item.title,
                 price: item.price,
                 rentDuration: item.rentDuration)
         response

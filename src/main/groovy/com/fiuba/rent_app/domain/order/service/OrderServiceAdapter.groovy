@@ -14,6 +14,7 @@ class OrderServiceAdapter implements OrderService {
     private List<OrderCreationRule> orderCreationRules
 
     @Override
+    //@Transactional
     Order createFor(Long itemId, Long borrowerId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
@@ -22,7 +23,7 @@ class OrderServiceAdapter implements OrderService {
                 .item(item)
                 .build()
         orderCreationRules.forEach(rule -> rule.evaluate(order))
-        item.rentWith()
+        item.rent()
         return orderRepository.save(order)
     }
 }

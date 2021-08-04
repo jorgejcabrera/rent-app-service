@@ -7,6 +7,8 @@ import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.builder.ItemBuilderAdapter
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 
+import java.util.stream.Collectors
+
 class ItemServiceAdapter implements ItemService {
 
     private JpaItemRepository itemRepository
@@ -22,12 +24,16 @@ class ItemServiceAdapter implements ItemService {
                 .rentDaysDuration(body.rentingDays)
                 .description(body.description)
                 .borrower(borrower)
+                .title(body.title)
                 .build()
         return itemRepository.save(item)
     }
 
     @Override
     List<Item> listAll() {
-        return itemRepository.findAll()
+        itemRepository.findAll()
+                .stream()
+                .filter { !it.isBeingUsed() }
+                .collect(Collectors.toList())
     }
 }

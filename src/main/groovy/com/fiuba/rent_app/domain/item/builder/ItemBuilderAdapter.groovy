@@ -10,6 +10,7 @@ class ItemBuilderAdapter implements ItemBuilder {
     private String description
     private BigDecimal price
     private Account borrower
+    private String title
     private Long id
     private Integer rentDaysDuration
 
@@ -22,6 +23,12 @@ class ItemBuilderAdapter implements ItemBuilder {
     @Override
     ItemBuilder description(String description) {
         this.description = description
+        return this
+    }
+
+    @Override
+    ItemBuilder title(String title) {
+        this.title = title
         return this
     }
 
@@ -49,6 +56,7 @@ class ItemBuilderAdapter implements ItemBuilder {
                 account: borrower,
                 description: description,
                 price: price,
+                title: title,
                 rentDuration: ofDays(rentDaysDuration),
                 status: AVAILABLE,
                 id: id)
