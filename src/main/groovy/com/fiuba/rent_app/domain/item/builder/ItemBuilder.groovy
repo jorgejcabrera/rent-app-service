@@ -14,7 +14,7 @@ interface ItemBuilder {
 
     ItemBuilder price(BigDecimal price)
 
-    ItemBuilder borrower(Account renter)
+    ItemBuilder lender(Account renter)
 
     ItemBuilder rentDaysDuration(int daysDuration)
 

@@ -45,7 +45,7 @@ class Item {
         return id
     }
 
-    Long getRenterId() {
+    Long getLenderId() {
         return this.account.getId()
     }
 

@@ -16,14 +16,14 @@ class ItemServiceAdapter implements ItemService {
     private JpaAccountRepository accountRepository
 
     @Override
-    Item create(ItemCreationBody body, Long borrowerId) {
-        Account borrower = accountRepository.findById(borrowerId)
-                .orElseThrow { new ItemBorrowerDoesNotExistException("The account $borrowerId does not exist.") }
+    Item create(ItemCreationBody body, Long lenderId) {
+        Account lender = accountRepository.findById(lenderId)
+                .orElseThrow { new ItemLenderDoesNotExistException("The account $lenderId does not exist.") }
         Item item = new ItemBuilderAdapter()
                 .price(body.price)
                 .rentDaysDuration(body.rentingDays)
                 .description(body.description)
-                .borrower(borrower)
+                .lender(lender)
                 .title(body.title)
                 .build()
         return itemRepository.save(item)

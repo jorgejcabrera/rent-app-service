@@ -27,7 +27,7 @@ class OrderBuilderAdapter implements OrderBuilder {
     Order build() {
         LocalDateTime expiredRentDay = calculateExpiredRentDay(item)
         return new Order(
-                lender: item.renterId,
+                lender: item.lenderId,
                 borrower: borrowerId,
                 expiredRentDay: expiredRentDay,
                 item: item

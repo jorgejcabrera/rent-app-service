@@ -9,7 +9,7 @@ import static java.time.Duration.ofDays
 class ItemBuilderAdapter implements ItemBuilder {
     private String description
     private BigDecimal price
-    private Account borrower
+    private Account lender
     private String title
     private Long id
     private Integer rentDaysDuration
@@ -39,8 +39,8 @@ class ItemBuilderAdapter implements ItemBuilder {
     }
 
     @Override
-    ItemBuilder borrower(Account borrower) {
-        this.borrower = borrower
+    ItemBuilder lender(Account lender) {
+        this.lender = lender
         return this
     }
 
@@ -53,7 +53,7 @@ class ItemBuilderAdapter implements ItemBuilder {
     @Override
     Item build() {
         return new Item(
-                account: borrower,
+                account: lender,
                 description: description,
                 price: price,
                 title: title,

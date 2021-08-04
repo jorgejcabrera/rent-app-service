@@ -1,6 +1,6 @@
 package com.fiuba.rent_app.presentation
 
-import com.fiuba.rent_app.domain.item.service.ItemBorrowerDoesNotExistException
+import com.fiuba.rent_app.domain.item.service.ItemLenderDoesNotExistException
 import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
 import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
@@ -26,8 +26,8 @@ class ExceptionHandlerAdvice {
                 .body(new ErrorResponse(errorCode: "invalid_renter", message: exception.message))
     }
 
-    @ExceptionHandler(ItemBorrowerDoesNotExistException.class)
-    ResponseEntity<ErrorResponse> handle(ItemBorrowerDoesNotExistException exception) {
+    @ExceptionHandler(ItemLenderDoesNotExistException.class)
+    ResponseEntity<ErrorResponse> handle(ItemLenderDoesNotExistException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(errorCode: "invalid_borrower", message: exception.message))
     }
