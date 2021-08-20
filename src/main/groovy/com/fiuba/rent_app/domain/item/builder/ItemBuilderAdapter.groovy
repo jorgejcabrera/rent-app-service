@@ -9,6 +9,7 @@ import static java.time.Duration.ofDays
 class ItemBuilderAdapter implements ItemBuilder {
     private String description
     private BigDecimal price
+    private BigDecimal assuranceCost
     private Account lender
     private String title
     private Long id
@@ -51,6 +52,12 @@ class ItemBuilderAdapter implements ItemBuilder {
     }
 
     @Override
+    ItemBuilder assuranceCost(BigDecimal assuranceCost) {
+        this.assuranceCost = assuranceCost
+        return this
+    }
+
+    @Override
     Item build() {
         return new Item(
                 account: lender,
@@ -59,6 +66,7 @@ class ItemBuilderAdapter implements ItemBuilder {
                 title: title,
                 rentDuration: ofDays(rentDaysDuration),
                 status: AVAILABLE,
+                assuranceCost: assuranceCost,
                 id: id)
     }
 }

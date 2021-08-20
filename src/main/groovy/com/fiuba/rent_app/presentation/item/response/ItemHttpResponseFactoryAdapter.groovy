@@ -39,7 +39,8 @@ class ItemHttpResponseFactoryAdapter implements ItemHttpResponseFactory {
                 description: item.description,
                 title: item.title,
                 price: item.price,
-                rentDuration: item.rentDuration)
+                rentDuration: item.rentDuration,
+                totalToPay: item.totalToPay)
         response
     }
 

@@ -23,10 +23,12 @@ class ItemServiceAdapter implements ItemService {
                 .price(body.price)
                 .rentDaysDuration(body.rentingDays)
                 .description(body.description)
+                .assuranceCost(body.assuranceCost)
                 .lender(lender)
                 .title(body.title)
                 .build()
-        return itemRepository.save(item)
+        itemRepository.save(item)
+        return item
     }
 
     @Override

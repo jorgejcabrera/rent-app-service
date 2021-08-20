@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static com.nhaarman.mockitokotlin2.VerificationKt.verify
 import static org.mockito.ArgumentMatchers.any
+import static org.mockito.Mockito.description
 import static org.mockito.Mockito.times
 
 class ItemServiceTest {
@@ -30,6 +31,19 @@ class ItemServiceTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         service = new ItemServiceAdapter(itemRepository: itemRepository, accountRepository: accountRepository)
+    }
+
+    @Test
+    void when_an_item_has_been_created_then_the_amount_to_pay_will_be_the_sum_of_the_price_and_assurance_amount() {
+        // GIVEN
+        givenAnAccount()
+        ItemCreationBody body = givenAItemCreationBody()
+
+        // WHEN
+        Item item = service.create(body, 1L)
+
+        // THEN
+        Assertions.assertEquals(body.assuranceCost + body.price, item.totalToPay)
     }
 
     @Test
@@ -63,7 +77,12 @@ class ItemServiceTest {
 
     @NotNull
     private static ItemCreationBody givenAItemCreationBody() {
-        return new ItemCreationBody("", BigDecimal.valueOf(10L), 1)
+        return new ItemCreationBody(
+                description: "",
+                price: BigDecimal.valueOf(10L),
+                rentingDays: 1,
+                assuranceCost: BigDecimal.valueOf(100)
+        )
     }
 
     void givenAnAccount() {

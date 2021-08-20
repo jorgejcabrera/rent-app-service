@@ -18,6 +18,8 @@ interface ItemBuilder {
 
     ItemBuilder rentDaysDuration(int daysDuration)
 
+    ItemBuilder assuranceCost(BigDecimal assuranceCost)
+
     Item build()
 
 }

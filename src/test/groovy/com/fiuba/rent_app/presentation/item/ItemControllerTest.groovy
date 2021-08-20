@@ -57,6 +57,20 @@ class ItemControllerTest {
     }
 
     @Test
+    void when_execute_a_request_to_create_an_item_then_the_amount_to_pay_must_be_retrieved() throws Exception {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody()
+        givenAServiceThatCreateAnItem(anItemCreationBody)
+
+        // WHEN
+        String response = whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
+
+        // THEN
+        thenTheItemMustContainAnTotalAmountToPay(response)
+    }
+
+
+    @Test
     void when_execute_a_request_to_create_an_item_then_the_item_service_must_be_used() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
@@ -118,8 +132,14 @@ class ItemControllerTest {
                 .price(body.price)
                 .rentDaysDuration(body.rentingDays)
                 .description(body.description)
+                .assuranceCost(body.assuranceCost)
                 .id(1L)
                 .build()
+    }
+
+    private void thenTheItemMustContainAnTotalAmountToPay(String response) throws JsonProcessingException {
+        ItemHttpResponse httpResponse = mapper.readValue(response, ItemHttpResponse.class)
+        assertNotNull(httpResponse.totalToPay)
     }
 
     private void thenTheItemMustContainAnId(String response) throws JsonProcessingException {
@@ -134,6 +154,7 @@ class ItemControllerTest {
     private String givenAnItemCreationBody() throws JsonProcessingException {
         return mapper.writeValueAsString(new ItemCreationBody(
                 description: "mi item",
+                assuranceCost: valueOf(1000),
                 price: valueOf(10.0),
                 rentingDays: 2))
     }

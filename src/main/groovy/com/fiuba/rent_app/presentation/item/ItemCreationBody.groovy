@@ -9,16 +9,25 @@ class ItemCreationBody {
     @JsonProperty("price")
     public BigDecimal price
 
+    @JsonProperty("assurance_cost")
+    public BigDecimal assuranceCost
+
     @JsonProperty("renting_days")
     public Integer rentingDays
 
     @JsonProperty("title")
     public String title
 
-    ItemCreationBody(String description, BigDecimal price, Integer rentingDays) {
+    ItemCreationBody(
+            String description,
+            BigDecimal price,
+            Integer rentingDays,
+            BigDecimal assuranceCost
+    ) {
         this.description = description
         this.price = price
         this.rentingDays = rentingDays
+        this.assuranceCost = assuranceCost
     }
 
     ItemCreationBody() {}

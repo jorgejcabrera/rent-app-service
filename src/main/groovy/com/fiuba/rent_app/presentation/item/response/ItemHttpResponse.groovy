@@ -10,5 +10,6 @@ class ItemHttpResponse {
     String description
     String title
     BigDecimal price
+    BigDecimal totalToPay
     Duration rentDuration
 }

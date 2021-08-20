@@ -1,6 +1,6 @@
 package com.fiuba.rent_app.domain.order
 
-import com.fiuba.rent_app.ItemFactory
+import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
@@ -37,7 +37,7 @@ class OrderServiceTest {
     Long itemId = 1L
     Long borrowerId = 2L
     Long lenderId = 1L
-    Item drill = ItemFactory.availableDrillWith(lenderId)
+    Item drill = TestItemFactory.availableDrillWith(lenderId)
     Duration rentDuration = drill.rentDuration
 
     @BeforeEach
@@ -113,7 +113,7 @@ class OrderServiceTest {
     }
 
     void givenARentedItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(ItemFactory.rentedDrillWith(lenderId)))
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(TestItemFactory.rentedDrillWith(lenderId)))
     }
 
     void givenAnAvailableItem() {

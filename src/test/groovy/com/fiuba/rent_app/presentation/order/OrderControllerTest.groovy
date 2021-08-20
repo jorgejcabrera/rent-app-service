@@ -1,14 +1,11 @@
 package com.fiuba.rent_app.presentation.order
 
-import com.fasterxml.jackson.databind.ObjectMapper
+
 import com.fiuba.rent_app.configuration.OrderBeanDefinition
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.service.OrderService
-import com.fiuba.rent_app.presentation.ExceptionHandlerAdvice
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponse
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponseFactory
-import org.aspectj.lang.annotation.Before
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
@@ -17,12 +14,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 import java.time.LocalDateTime
 

@@ -2,12 +2,13 @@ package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.order.Order
+
 import javax.persistence.*
 import java.time.Duration
+
 import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
 import static javax.persistence.CascadeType.ALL
 import static javax.persistence.EnumType.STRING
-
 
 @Entity(name = "item")
 @Table(name = "item")
@@ -32,6 +33,9 @@ class Item {
 
     @Column(name = "price")
     private BigDecimal price
+
+    @Column(name = "assurance_cost")
+    private BigDecimal assuranceCost
 
     @Column(name = "rent_duration")
     private Duration rentDuration
@@ -61,6 +65,9 @@ class Item {
         return price
     }
 
+    BigDecimal getTotalToPay() {
+        return this.price.plus(this.assuranceCost)
+    }
 
     Duration getRentDuration() {
         return rentDuration
