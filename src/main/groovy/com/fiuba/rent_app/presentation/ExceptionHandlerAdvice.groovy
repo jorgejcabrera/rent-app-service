@@ -1,8 +1,8 @@
 package com.fiuba.rent_app.presentation
 
 import com.fiuba.rent_app.domain.item.service.ItemLenderDoesNotExistException
-import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
-import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
+import com.fiuba.rent_app.domain.order.builder.exception.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

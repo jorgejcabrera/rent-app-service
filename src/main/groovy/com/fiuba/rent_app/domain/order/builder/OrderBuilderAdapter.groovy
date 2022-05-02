@@ -2,8 +2,7 @@ package com.fiuba.rent_app.domain.order.builder
 
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
-import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
 
 import java.time.LocalDateTime
 

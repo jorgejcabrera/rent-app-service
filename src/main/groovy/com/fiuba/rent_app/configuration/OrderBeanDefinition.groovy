@@ -2,9 +2,6 @@ package com.fiuba.rent_app.configuration
 
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
-
-import com.fiuba.rent_app.domain.order.builder.rule.ItemMustBeAvailableForOrdering
-import com.fiuba.rent_app.domain.order.builder.rule.ItemBorrowerAndOwnerMustBeDifferent
 import com.fiuba.rent_app.domain.order.service.OrderService
 import com.fiuba.rent_app.domain.order.service.OrderServiceAdapter
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponseFactory

@@ -5,10 +5,8 @@ import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.builder.OrderBuilderAdapter
-import com.fiuba.rent_app.domain.order.builder.rule.InvalidRenterException
-import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
-import com.fiuba.rent_app.domain.order.builder.rule.ItemMustBeAvailableForOrdering
-import com.fiuba.rent_app.domain.order.builder.rule.ItemBorrowerAndOwnerMustBeDifferent
+import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
+import com.fiuba.rent_app.domain.order.builder.exception.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import com.fiuba.rent_app.domain.order.service.OrderService
 import com.fiuba.rent_app.domain.order.service.OrderServiceAdapter
