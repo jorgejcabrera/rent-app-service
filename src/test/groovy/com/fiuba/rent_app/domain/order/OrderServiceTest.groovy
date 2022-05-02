@@ -45,11 +45,7 @@ class OrderServiceTest {
         MockitoAnnotations.initMocks(this)
         service = new OrderServiceAdapter(
                 itemRepository: itemRepository,
-                orderRepository: orderRepository,
-                orderCreationRules: [
-                        new ItemBorrowerAndOwnerMustBeDifferent(),
-                        new ItemMustBeAvailableForOrdering()
-                ]
+                orderRepository: orderRepository
         )
     }
 

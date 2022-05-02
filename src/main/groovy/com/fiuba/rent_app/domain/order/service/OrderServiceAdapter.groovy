@@ -29,5 +29,4 @@ class OrderServiceAdapter implements OrderService {
         return orderRepository.save(order)
     }
 
-    private List<OrderCreationRule> orderCreationRules
 }

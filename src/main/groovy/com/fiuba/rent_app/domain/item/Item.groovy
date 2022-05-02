@@ -2,9 +2,6 @@ package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.builder.rule.ItemBorrowerAndOwnerMustBeDifferent
-import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
-import com.fiuba.rent_app.domain.order.builder.rule.ItemMustBeAvailableForOrdering
 
 import javax.persistence.*
 import java.time.Duration

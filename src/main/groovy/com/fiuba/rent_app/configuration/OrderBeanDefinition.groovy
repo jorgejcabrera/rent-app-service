@@ -24,8 +24,7 @@ class OrderBeanDefinition {
     OrderService orderService(JpaItemRepository itemRepository, JpaOrderRepository jpaOrderRepository) {
         return new OrderServiceAdapter(
                 itemRepository: itemRepository,
-                orderRepository: jpaOrderRepository,
-                orderCreationRules: [new ItemMustBeAvailableForOrdering(), new ItemBorrowerAndOwnerMustBeDifferent()]
+                orderRepository: jpaOrderRepository
         )
     }
 }
