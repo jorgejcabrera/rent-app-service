@@ -9,7 +9,7 @@ import com.fiuba.rent_app.presentation.item.ItemCreationBody
 
 import java.util.stream.Collectors
 
-class ItemServiceAdapter implements ItemService {
+class ItemServiceImpl implements ItemService {
 
     private JpaItemRepository itemRepository
 

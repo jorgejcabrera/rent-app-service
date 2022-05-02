@@ -5,8 +5,10 @@ import com.fiuba.rent_app.domain.order.Order
 
 import javax.persistence.*
 import java.time.Duration
+import java.time.LocalDateTime
 
 import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
+import static java.time.LocalDateTime.now
 import static javax.persistence.CascadeType.ALL
 import static javax.persistence.EnumType.STRING
 
@@ -83,5 +85,9 @@ class Item {
 
     Boolean isBeingUsed() {
         this.status == RENTED
+    }
+
+    LocalDateTime calculateExpiredRentDay() {
+        return now() + this.rentDuration
     }
 }

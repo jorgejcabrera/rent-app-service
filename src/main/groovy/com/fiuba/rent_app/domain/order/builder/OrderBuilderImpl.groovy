@@ -6,7 +6,7 @@ import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
 
 import java.time.LocalDateTime
 
-class OrderBuilderAdapter implements OrderBuilder {
+class OrderBuilderImpl implements OrderBuilder {
 
     private Item item
 
@@ -26,7 +26,7 @@ class OrderBuilderAdapter implements OrderBuilder {
 
     @Override
     Order build() {
-        LocalDateTime expiredRentDay = calculateExpiredRentDay(item)
+        LocalDateTime expiredRentDay = item.calculateExpiredRentDay()
         Order order = new Order(
                 lender: item.lenderId,
                 borrower: borrowerId,
@@ -37,10 +37,5 @@ class OrderBuilderAdapter implements OrderBuilder {
             throw new InvalidRenterException("The borrower ${order.getBorrower()} can't be the owner of the ${order.getItem().getId()} item")
         }
         order
-    }
-
-    private static LocalDateTime calculateExpiredRentDay(Item item) {
-        LocalDateTime expiredRentDay = LocalDateTime.now() + item.rentDuration
-        return expiredRentDay
     }
 }

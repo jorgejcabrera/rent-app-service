@@ -4,7 +4,7 @@ import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.service.ItemService
-import com.fiuba.rent_app.domain.item.service.ItemServiceAdapter
+import com.fiuba.rent_app.domain.item.service.ItemServiceImpl
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import org.jetbrains.annotations.NotNull
 import org.junit.jupiter.api.Assertions
@@ -15,7 +15,6 @@ import org.mockito.MockitoAnnotations
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static com.nhaarman.mockitokotlin2.VerificationKt.verify
 import static org.mockito.ArgumentMatchers.any
-import static org.mockito.Mockito.description
 import static org.mockito.Mockito.times
 
 class ItemServiceTest {
@@ -30,7 +29,7 @@ class ItemServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        service = new ItemServiceAdapter(itemRepository: itemRepository, accountRepository: accountRepository)
+        service = new ItemServiceImpl(itemRepository: itemRepository, accountRepository: accountRepository)
     }
 
     @Test
