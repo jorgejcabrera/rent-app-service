@@ -5,16 +5,16 @@ import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.Order
 import com.fiuba.rent_app.domain.order.builder.OrderBuilderAdapter
+import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.builder.rule.OrderCreationRule
+import org.springframework.transaction.annotation.Transactional
 
 class OrderServiceAdapter implements OrderService {
 
     private JpaItemRepository itemRepository
     private JpaOrderRepository orderRepository
-    private List<OrderCreationRule> orderCreationRules
-
     @Override
-    //@Transactional
+    @Transactional
     Order createFor(Long itemId, Long borrowerId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
@@ -22,8 +22,12 @@ class OrderServiceAdapter implements OrderService {
                 .borrowerId(borrowerId)
                 .item(item)
                 .build()
-        orderCreationRules.forEach(rule -> rule.evaluate(order))
+        if (!item.canBeRented()) {
+            throw new ItemIsNotAvailableForOrderingException("The item ${order.getItem().getId()} is not avilable.")
+        }
         item.rent()
         return orderRepository.save(order)
     }
+
+    private List<OrderCreationRule> orderCreationRules
 }

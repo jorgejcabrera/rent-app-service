@@ -2,6 +2,9 @@ package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.order.Order
+import com.fiuba.rent_app.domain.order.builder.rule.ItemBorrowerAndOwnerMustBeDifferent
+import com.fiuba.rent_app.domain.order.builder.rule.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.builder.rule.ItemMustBeAvailableForOrdering
 
 import javax.persistence.*
 import java.time.Duration
@@ -46,31 +49,35 @@ class Item {
     Item() {}
 
     Long getId() {
-        return id
+        id
     }
 
     Long getLenderId() {
-        return this.account.getId()
+        this.account.getId()
     }
 
     String getDescription() {
-        return description
+        description
     }
 
     String getTitle() {
-        return title
+        title
     }
 
     BigDecimal getPrice() {
-        return price
+        price
     }
 
     BigDecimal getTotalToPay() {
-        return this.price.plus(this.assuranceCost)
+        this.price + this.assuranceCost
     }
 
     Duration getRentDuration() {
-        return rentDuration
+        rentDuration
+    }
+
+    Boolean canBeRented() {
+        return !this.isBeingUsed()
     }
 
     void rent() {
@@ -78,6 +85,6 @@ class Item {
     }
 
     Boolean isBeingUsed() {
-        return this.status == RENTED
+        this.status == RENTED
     }
 }

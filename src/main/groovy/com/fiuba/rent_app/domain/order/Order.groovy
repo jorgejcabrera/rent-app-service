@@ -41,14 +41,18 @@ class Order {
     Order() {}
 
     Item getItem() {
-        return this.item
+        this.item
     }
 
     Long getLender() {
-        return this.lender
+        this.lender
     }
 
     Long getBorrower() {
-        return this.borrower
+        this.borrower
+    }
+
+    Boolean isValid() {
+        this.getLender() != this.getBorrower()
     }
 }

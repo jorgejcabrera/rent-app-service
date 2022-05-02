@@ -28,7 +28,7 @@ class ItemServiceAdapter implements ItemService {
                 .title(body.title)
                 .build()
         itemRepository.save(item)
-        return item
+        item
     }
 
     @Override
