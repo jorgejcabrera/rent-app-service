@@ -5,10 +5,12 @@ import com.fiuba.rent_app.domain.item.Item
 import javax.persistence.*
 import java.time.LocalDateTime
 
+import static com.fiuba.rent_app.domain.order.OrderStatus.*
+import static com.fiuba.rent_app.domain.order.OrderStatus.OPEN
 import static javax.persistence.CascadeType.ALL
+import static javax.persistence.EnumType.STRING
 import static javax.persistence.GenerationType.AUTO
 
-// revisar cardinalidad many to onde desde order validando
 @Entity(name = "orders")
 @Table(name = "orders")
 class Order {
@@ -18,8 +20,8 @@ class Order {
     @Column(name = "id")
     private Long id
 
-    @OneToOne(cascade = ALL)
-    @JoinColumn(name = "item_id", referencedColumnName = "id")
+    @ManyToOne(cascade = ALL)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item
 
     @Column(name = "lender_id")
@@ -28,17 +30,26 @@ class Order {
     @Column(name = "borrower_id")
     private Long borrower
 
-    @Column(name = "expired_rent_day")
-    private LocalDateTime expiredRentDay
+    @Column(name = "created_at")
+    private LocalDateTime createdAt
 
-    Order(Long lender, Long borrower, LocalDateTime expiredRentDay, Item item) {
+    @Column(name = "status")
+    @Enumerated(STRING)
+    private OrderStatus status
+
+    Order(Long lender, Long borrower, LocalDateTime createdAt, Item item) {
         this.lender = lender
         this.borrower = borrower
-        this.expiredRentDay = expiredRentDay
+        this.createdAt = createdAt
         this.item = item
+        this.status = OPEN
     }
 
     Order() {}
+
+    LocalDateTime createdAt() {
+        return this.createdAt()
+    }
 
     Item getItem() {
         this.item
@@ -54,5 +65,13 @@ class Order {
 
     Boolean isValid() {
         this.getLender() != this.getBorrower()
+    }
+
+    Boolean isOpen() {
+        this.status == OPEN
+    }
+
+    void finish() {
+        this.status = FINISHED
     }
 }

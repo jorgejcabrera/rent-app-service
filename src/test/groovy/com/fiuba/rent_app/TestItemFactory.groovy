@@ -2,29 +2,35 @@ package com.fiuba.rent_app
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
+import com.fiuba.rent_app.domain.order.builder.OrderBuilder
+import com.fiuba.rent_app.domain.order.builder.OrderBuilderImpl
 
 import java.time.Duration
 
-import static com.fiuba.rent_app.domain.item.ItemStatus.AVAILABLE
-import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
 import static java.math.BigDecimal.valueOf
 import static java.time.Duration.ofDays
+import static java.time.LocalDateTime.now
 
 class TestItemFactory {
 
     static Item rentedDrillWith(Long lender) {
-        return new Item(
-                status: RENTED,
+        def item = new Item(
                 description: "Drill",
                 rentDuration: ofDays(1),
                 account: accountOf(lender))
+        def order = new OrderBuilderImpl()
+                .item(item)
+                .borrowerId(2)
+                .build()
+        item.addOrder(order)
+        item
     }
 
     static Item availableDrillWith(Long lender) {
         Duration rentDuration = ofDays(2)
         return new Item(
-                status: AVAILABLE,
                 rentDuration: rentDuration,
+                rentDay: now(),
                 price: valueOf(10L),
                 description: "Drill",
                 account: accountOf(lender))

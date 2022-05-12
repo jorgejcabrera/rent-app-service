@@ -12,20 +12,20 @@ class OrderServiceAdapter implements OrderService {
 
     private JpaItemRepository itemRepository
     private JpaOrderRepository orderRepository
+
     @Override
     @Transactional
     Order createFor(Long itemId, Long borrowerId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
+        if (!item.canBeRented()) {
+            throw new ItemIsNotAvailableForOrderingException("The item ${item.getId()} is not avilable.")
+        }
         Order order = new OrderBuilderImpl()
                 .borrowerId(borrowerId)
                 .item(item)
                 .build()
-        if (!item.canBeRented()) {
-            throw new ItemIsNotAvailableForOrderingException("The item ${order.getItem().getId()} is not avilable.")
-        }
-        item.rent()
-        return orderRepository.save(order)
+        orderRepository.save(order)
     }
 
 }

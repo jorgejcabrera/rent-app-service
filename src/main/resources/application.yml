@@ -2,7 +2,7 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://${DB_DNS}/rent_app_db?allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/rent_app_db?allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useSSL=false
     config:
       minimumIdle: 5
       maximumPoolSize: 15

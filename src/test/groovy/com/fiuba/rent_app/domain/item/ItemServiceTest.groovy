@@ -1,19 +1,23 @@
 package com.fiuba.rent_app.domain.item
 
+import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.item.service.ItemServiceImpl
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
+import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 import org.jetbrains.annotations.NotNull
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static com.nhaarman.mockitokotlin2.VerificationKt.verify
+import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.times
 
@@ -70,6 +74,34 @@ class ItemServiceTest {
         Assertions.assertEquals(2, items.size())
     }
 
+    @Test
+    void when_republish_an_item_with_orders_then_all_of_those_must_be_closed() {
+        // GIVEN
+        givenARentedItem()
+        ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
+
+        // WHEN
+        def item = service.republish(body, 1)
+
+        // THEN
+        Assertions.assertFalse(item.isBeingUsed())
+        assertTrue(item.orders.find { it.isOpen() } == null)
+    }
+
+    @Test
+    void when_republish_an_item_that_does_not_have_any_orders_then_it_must_work_ok() {
+        // GIVEN
+        givenACommonItem()
+        ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
+
+        // WHEN
+        def item = service.republish(body, 1)
+
+        // THEN
+        Assertions.assertFalse(item.isBeingUsed())
+        assertTrue(item.orders.find { it.isOpen() } == null)
+    }
+
     private void theItemWasSaved() {
         verify(itemRepository, times(1)).save(any())
     }
@@ -90,10 +122,20 @@ class ItemServiceTest {
 
     def givenSomeSavedItems() {
         List<Item> items = [
-                new Item(title: "zapatilla", status: ItemStatus.RENTED),
+                TestItemFactory.rentedDrillWith(1),
                 new Item(title: "play station 5"),
                 new Item(title: "computadora")
         ]
         whenever(itemRepository.findAll()).thenReturn(items)
+    }
+
+    void givenARentedItem() {
+        def rentedItem = TestItemFactory.rentedDrillWith(1)
+        whenever(itemRepository.findById(any())).thenReturn(Optional.of(rentedItem))
+    }
+
+    void givenACommonItem() {
+        def commonItem = TestItemFactory.availableDrillWith(1)
+        whenever(itemRepository.findById(any())).thenReturn(Optional.of(commonItem))
     }
 }

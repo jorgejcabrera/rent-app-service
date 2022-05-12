@@ -3,10 +3,10 @@ package com.fiuba.rent_app.domain.item.builder
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
 
-import static com.fiuba.rent_app.domain.item.ItemStatus.AVAILABLE
 import static java.time.Duration.ofDays
+import static java.time.LocalDateTime.now
 
-class ItemBuilderAdapter implements ItemBuilder {
+class ItemBuilderImpl implements ItemBuilder {
     private String description
     private BigDecimal price
     private BigDecimal assuranceCost
@@ -64,8 +64,8 @@ class ItemBuilderAdapter implements ItemBuilder {
                 description: description,
                 price: price,
                 title: title,
+                rentDay: now(),
                 rentDuration: ofDays(rentDaysDuration),
-                status: AVAILABLE,
                 assuranceCost: assuranceCost,
                 id: id)
     }

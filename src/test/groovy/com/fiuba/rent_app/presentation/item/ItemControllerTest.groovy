@@ -2,10 +2,11 @@ package com.fiuba.rent_app.presentation.item
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.configuration.ItemBeanDefinition
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.builder.ItemBuilderAdapter
+import com.fiuba.rent_app.domain.item.builder.ItemBuilderImpl
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponse
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
@@ -54,6 +55,23 @@ class ItemControllerTest {
     @BeforeEach
     private void setUp() {
         MockitoAnnotations.initMocks(this)
+    }
+
+    @Test
+    void when_republish_a_valid_item_then_it_must_work_ok() {
+        // GIVEN
+        String anItemRepublishingBody = giveAnItemRepublishingBody()
+        givenAnItemRepublished()
+
+        // WHEN
+        def response = this.mockMvc.perform(MockMvcRequestBuilders
+                .put("/v1/item/1/publishing")
+                .content(anItemRepublishingBody)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+
     }
 
     @Test
@@ -120,7 +138,6 @@ class ItemControllerTest {
                 .andReturn().getResponse().getContentAsString()
     }
 
-
     private void givenAServiceThatCreateAnItem(String anItemCreationBody) throws JsonProcessingException {
         Item newItem = bodyAsItem(anItemCreationBody)
         whenever(itemService.create(any(), any())).thenReturn(newItem)
@@ -128,7 +145,7 @@ class ItemControllerTest {
 
     private Item bodyAsItem(String anItemCreationBody) throws JsonProcessingException {
         ItemCreationBody body = mapper.readValue(anItemCreationBody, ItemCreationBody.class);
-        return new ItemBuilderAdapter()
+        return new ItemBuilderImpl()
                 .price(body.price)
                 .rentDaysDuration(body.rentingDays)
                 .description(body.description)
@@ -159,6 +176,13 @@ class ItemControllerTest {
                 rentingDays: 2))
     }
 
+    private String giveAnItemRepublishingBody() throws JsonProcessingException {
+        return mapper.writeValueAsString(new ItemRepublishingBody(
+                price: 10.0,
+                rentingDays: 2
+        ))
+    }
+
     private void thenTheUserServiceWasUsed() {
         verify(itemService, times(1)).create(any(), any())
     }
@@ -166,5 +190,10 @@ class ItemControllerTest {
     private void thenTheItemContainsAPrice(String response) throws JsonProcessingException {
         ItemHttpResponse itemCreated = mapper.readValue(response, ItemHttpResponse.class)
         assertEquals(valueOf(10.0), itemCreated.price)
+    }
+
+    void givenAnItemRepublished() {
+        Item commonItem = TestItemFactory.availableDrillWith(1)
+        whenever(itemService.republish(any(), any())).thenReturn(commonItem)
     }
 }

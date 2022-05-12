@@ -79,7 +79,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void when_ordering_an_available_item_then_the_returning_date_must_be_indicated_in_the_order_info() {
+    void when_ordering_an_available_item_then_the_creation_date_must_be_indicated_in_the_order_info() {
         // GIVEN
         givenAnAvailableItem()
         givenAnOrderSuccessfullySaved()
@@ -120,9 +120,9 @@ class OrderServiceTest {
 
     void thenTheExpiredRentDateWasSuccessfullyCalculated(Order order) {
         LocalDateTime expectedDate = LocalDateTime.now() + rentDuration
-        assertEquals(expectedDate.dayOfMonth, order.expiredRentDay.dayOfMonth)
-        assertEquals(expectedDate.month, order.expiredRentDay.month)
-        assertEquals(expectedDate.year, order.expiredRentDay.year)
+        assertEquals(expectedDate.dayOfMonth, order.item.expireRentDay().dayOfMonth)
+        assertEquals(expectedDate.month, order.item.expireRentDay().month)
+        assertEquals(expectedDate.year, order.item.expireRentDay().year)
     }
 
     void givenAnOrderSuccessfullySaved() {

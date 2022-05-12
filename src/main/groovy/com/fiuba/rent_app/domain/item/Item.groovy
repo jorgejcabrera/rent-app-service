@@ -2,30 +2,29 @@ package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.order.Order
+import org.hibernate.annotations.Fetch
+import org.springframework.data.repository.cdi.Eager
 
 import javax.persistence.*
 import java.time.Duration
 import java.time.LocalDateTime
 
-import static com.fiuba.rent_app.domain.item.ItemStatus.RENTED
-import static java.time.LocalDateTime.now
-import static javax.persistence.CascadeType.ALL
-import static javax.persistence.EnumType.STRING
+import static javax.persistence.GenerationType.AUTO
 
 @Entity(name = "item")
 @Table(name = "item")
 class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = AUTO)
     @Column(name = "id")
     private Long id
-
-    @OneToOne(mappedBy = "item", cascade = ALL)
-    private Order order
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     Account account
+
+    @OneToMany(mappedBy = "item")
+    private Set<Order> orders
 
     @Column(name = "description")
     private String description
@@ -42,10 +41,12 @@ class Item {
     @Column(name = "rent_duration")
     private Duration rentDuration
 
-    @Enumerated(STRING)
-    private ItemStatus status
+    @Column(name = "rent_day")
+    private LocalDateTime rentDay
 
-    Item() {}
+    Item() {
+        this.orders = new HashSet<>()
+    }
 
     Long getId() {
         id
@@ -76,18 +77,29 @@ class Item {
     }
 
     Boolean canBeRented() {
-        return !this.isBeingUsed()
-    }
-
-    void rent() {
-        this.status = RENTED
+        !this.isBeingUsed()
     }
 
     Boolean isBeingUsed() {
-        this.status == RENTED
+        this.orders.find { it.isOpen() } != null
     }
 
-    LocalDateTime calculateExpiredRentDay() {
-        return now() + this.rentDuration
+    LocalDateTime expireRentDay() {
+        this.rentDay + this.rentDuration
     }
+
+    void addOrder(Order order) {
+        this.orders.add(order)
+    }
+
+    void republish(BigDecimal price, Duration rentDuration) {
+        this.finishAllOrders()
+        this.rentDuration = rentDuration
+        this.price = price
+    }
+
+    private finishAllOrders() {
+        this.orders.forEach { it.finish() }
+    }
+
 }
