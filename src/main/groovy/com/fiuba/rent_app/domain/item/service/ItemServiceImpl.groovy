@@ -5,6 +5,7 @@ import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.builder.ItemBuilderImpl
+import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 
@@ -46,7 +47,7 @@ class ItemServiceImpl implements ItemService {
     @Override
     Item republish(ItemRepublishingBody body, Long itemId) {
         def item = itemRepository.findById(itemId)
-                .orElseThrow { new ItemDoesNotExistException("The item $itemId does not exist.") }
+                .orElseThrow { new ItemNotFoundException("The item $itemId does not exist.") }
         item.republish(body.price, ofDays(body.rentingDays))
         return item
     }

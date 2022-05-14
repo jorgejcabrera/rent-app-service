@@ -2,10 +2,9 @@ package com.fiuba.rent_app.domain.order.builder
 
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.OrderStatus
 import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
 
-import static com.fiuba.rent_app.domain.order.OrderStatus.*
+import static com.fiuba.rent_app.domain.order.OrderStatus.OPEN
 import static java.time.LocalDateTime.now
 
 class OrderBuilderImpl implements OrderBuilder {

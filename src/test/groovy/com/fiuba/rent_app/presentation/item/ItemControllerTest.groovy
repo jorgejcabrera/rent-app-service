@@ -7,10 +7,14 @@ import com.fiuba.rent_app.configuration.ItemBeanDefinition
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.builder.ItemBuilderImpl
+import com.fiuba.rent_app.domain.item.service.ItemLenderDoesNotExistException
 import com.fiuba.rent_app.domain.item.service.ItemService
+import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
+import com.fiuba.rent_app.presentation.ExceptionHandlerAdvice
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponse
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
 import org.jetbrains.annotations.NotNull
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
@@ -21,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static java.math.BigDecimal.valueOf
@@ -37,8 +42,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = [ItemController.class, ItemBeanDefinition.class])
 class ItemControllerTest {
 
-    @Autowired
     private MockMvc mockMvc
+
+    @Autowired
+    private ItemController controller
 
     @MockBean
     private JpaItemRepository jpaItemRepository
@@ -55,6 +62,47 @@ class ItemControllerTest {
     @BeforeEach
     private void setUp() {
         MockitoAnnotations.initMocks(this)
+        def handler = new ExceptionHandlerAdvice()
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(handler)
+                .build()
+    }
+
+    @Test
+    void when_try_to_republish_an_item_that_does_not_exist_then_an_exception_must_be_thrown() {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody()
+        givenAnItemThatDoesNotExist()
+
+        // WHEN
+        def response = this.mockMvc.perform(MockMvcRequestBuilders
+                .put("/v1/item/1/publishing")
+                .content(anItemCreationBody)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getContentAsString()
+
+        // THEN
+        assertEquals("""{"errorCode":"invalid_item","message":"The item does not exist."}""", response)
+    }
+
+    @Test
+    void when_the_item_lender_does_not_exist_then_an_exception_must_be_thrown() {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody()
+        givenAnItemLenderThatDoesNotExist()
+
+        // WHEN
+        def response = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/user/1/item")
+                .content(anItemCreationBody)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getContentAsString()
+
+        assertEquals("""{"errorCode":"invalid_borrower","message":"The account does not exist."}""", response)
     }
 
     @Test
@@ -64,14 +112,13 @@ class ItemControllerTest {
         givenAnItemRepublished()
 
         // WHEN
-        def response = this.mockMvc.perform(MockMvcRequestBuilders
+        this.mockMvc.perform(MockMvcRequestBuilders
                 .put("/v1/item/1/publishing")
                 .content(anItemRepublishingBody)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()
-
     }
 
     @Test
@@ -196,4 +243,13 @@ class ItemControllerTest {
         Item commonItem = TestItemFactory.availableDrillWith(1)
         whenever(itemService.republish(any(), any())).thenReturn(commonItem)
     }
+
+    void givenAnItemLenderThatDoesNotExist() {
+        whenever(itemService.create(any(), any())).thenThrow(new ItemLenderDoesNotExistException("The account does not exist."))
+    }
+
+    void givenAnItemThatDoesNotExist() {
+        whenever(itemService.republish(any(), any())).thenThrow(new ItemNotFoundException("The item does not exist."))
+    }
+
 }

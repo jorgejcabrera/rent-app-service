@@ -16,12 +16,14 @@ class TestItemFactory {
     static Item rentedDrillWith(Long lender) {
         def item = new Item(
                 description: "Drill",
-                rentDuration: ofDays(1),
+                rentDuration: ofDays(5),
+                rentDay: now().minusDays(5),
                 account: accountOf(lender))
         def order = new OrderBuilderImpl()
                 .item(item)
                 .borrowerId(2)
                 .build()
+        order.id = 1L
         item.addOrder(order)
         item
     }
@@ -29,10 +31,24 @@ class TestItemFactory {
     static Item availableDrillWith(Long lender) {
         Duration rentDuration = ofDays(2)
         return new Item(
+                id: 1001,
                 rentDuration: rentDuration,
+                assuranceCost: valueOf(1),
                 rentDay: now(),
                 price: valueOf(10L),
                 description: "Drill",
+                account: accountOf(lender))
+    }
+
+    static Item availablePS5(Long lender) {
+        Duration rentDuration = ofDays(2)
+        return new Item(
+                id: 1002,
+                rentDuration: rentDuration,
+                assuranceCost: valueOf(1),
+                rentDay: now(),
+                price: valueOf(500L),
+                description: "PS5",
                 account: accountOf(lender))
     }
 

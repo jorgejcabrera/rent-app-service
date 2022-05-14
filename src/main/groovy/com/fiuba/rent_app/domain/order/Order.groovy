@@ -5,7 +5,7 @@ import com.fiuba.rent_app.domain.item.Item
 import javax.persistence.*
 import java.time.LocalDateTime
 
-import static com.fiuba.rent_app.domain.order.OrderStatus.*
+import static com.fiuba.rent_app.domain.order.OrderStatus.FINISHED
 import static com.fiuba.rent_app.domain.order.OrderStatus.OPEN
 import static javax.persistence.CascadeType.ALL
 import static javax.persistence.EnumType.STRING

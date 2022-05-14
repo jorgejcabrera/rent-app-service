@@ -1,10 +1,13 @@
 package com.fiuba.rent_app.presentation.order
 
-
+import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.configuration.OrderBeanDefinition
 import com.fiuba.rent_app.domain.order.Order
+import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
+import com.fiuba.rent_app.domain.order.builder.exception.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import com.fiuba.rent_app.domain.order.service.OrderService
-import com.fiuba.rent_app.presentation.order.response.OrderHttpResponse
+import com.fiuba.rent_app.presentation.ExceptionHandlerAdvice
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponseFactory
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,19 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-
-import java.time.LocalDateTime
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
-import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -34,25 +34,72 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = [OrderController.class, OrderBeanDefinition.class])
 class OrderControllerTest {
 
-    @Autowired
     private MockMvc mockMvc
+
+    @Autowired
+    private OrderController controller
 
     @MockBean
     private OrderService orderService
 
-    @MockBean
+    @Autowired
     private OrderHttpResponseFactory responseFactory
 
     @BeforeEach
     private void setUp() {
         MockitoAnnotations.initMocks(this)
+        def handler = new ExceptionHandlerAdvice()
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(handler)
+                .build()
+    }
+
+    @Test
+    void when_the_item_borrower_is_the_item_lender_then_an_exception_must_be_raise() {
+        // GIVEN
+        givenAnItemWithAnInvalidBorrower()
+
+        // WHEN
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/item/1/order")
+                .header("x-caller-id", 2)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isPreconditionFailed())
+    }
+
+    @Test
+    void when_try_to_rent_an_item_that_does_not_exist_then_it_must_fail() {
+        // GIVEN
+        givenAnItemThatDoesNotExist()
+
+        // WHEN
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/item/1/order")
+                .header("x-caller-id", 2)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+    }
+
+    @Test
+    void when_try_to_rent_an_item_not_available_then_it_must_fail() {
+        // GIVEN
+        givenAnItemAlreadyRented()
+
+        // WHEN
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/item/1/order")
+                .header("x-caller-id", 2)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isPreconditionFailed())
     }
 
     @Test
     void when_execute_a_request_to_create_an_order_then_the_order_service_must_be_used() {
         // GIVEN
         givenAnOrderCreated()
-        givenASuccessfullyHttpResponse()
 
         // WHEN
         whenExecuteARequestToCreateAnOrder()
@@ -77,17 +124,24 @@ class OrderControllerTest {
     }
 
     private static Order givenAnOrder() {
-        return new Order(1L, 1L, LocalDateTime.now().plusDays(2), null)
-    }
-
-    void givenASuccessfullyHttpResponse() {
-        whenever(responseFactory.from(any()))
-                .thenReturn(ResponseEntity.status(CREATED)
-                        .body(new OrderHttpResponse()))
+        def item = TestItemFactory.rentedDrillWith(1)
+        return item.orders[0]
     }
 
     void thenTheServiceWasUsed() {
         verify(orderService, times(1)).createFor(any(), any())
+    }
+
+    void givenAnItemAlreadyRented() {
+        whenever(orderService.createFor(any(), any())).thenThrow(new ItemIsNotAvailableForOrderingException("The item is not avilable."))
+    }
+
+    void givenAnItemThatDoesNotExist() {
+        whenever(orderService.createFor(any(), any())).thenThrow(new ItemNotFoundException("The item is not avilable."))
+    }
+
+    void givenAnItemWithAnInvalidBorrower() {
+        whenever(orderService.createFor(any(), any())).thenThrow(new InvalidRenterException("The borrower can't be the owner of the item"))
     }
 }
 

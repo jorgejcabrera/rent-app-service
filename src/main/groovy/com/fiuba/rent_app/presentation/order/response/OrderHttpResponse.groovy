@@ -7,6 +7,6 @@ import java.time.LocalDateTime
 @ResponseBody
 class OrderHttpResponse {
     Long id
-    String renterEmail
+    String lenderId
     LocalDateTime expiredRentDate
 }
