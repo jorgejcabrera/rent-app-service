@@ -55,7 +55,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void when_the_item_borrower_is_the_item_lender_then_an_exception_must_be_raise() {
+    void "when the item borrower is the item lender then an exception must be raise"() {
         // GIVEN
         givenAnItemWithAnInvalidBorrower()
 
@@ -69,7 +69,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void when_try_to_rent_an_item_that_does_not_exist_then_it_must_fail() {
+    void "when try to rent an item that does not exist then it must fail"() {
         // GIVEN
         givenAnItemThatDoesNotExist()
 
@@ -83,7 +83,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void when_try_to_rent_an_item_not_available_then_it_must_fail() {
+    void "when try to rent an item not available then it must fail"() {
         // GIVEN
         givenAnItemAlreadyRented()
 
@@ -97,7 +97,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void when_execute_a_request_to_create_an_order_then_the_order_service_must_be_used() {
+    void "when execute a request to create an order then the order service must be used"() {
         // GIVEN
         givenAnOrderCreated()
 

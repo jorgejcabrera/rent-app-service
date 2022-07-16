@@ -69,7 +69,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void when_try_to_republish_an_item_that_does_not_exist_then_an_exception_must_be_thrown() {
+    void "when try to republish an item that does not exist then an exception must be thrown"() {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
         givenAnItemThatDoesNotExist()
@@ -88,7 +88,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void when_the_item_lender_does_not_exist_then_an_exception_must_be_thrown() {
+    void "when the item lender does not exist then an exception must be thrown"() {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
         givenAnItemLenderThatDoesNotExist()
@@ -106,7 +106,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void when_republish_a_valid_item_then_it_must_work_ok() {
+    void "when republish a valid item then it must work ok"() {
         // GIVEN
         String anItemRepublishingBody = giveAnItemRepublishingBody()
         givenAnItemRepublished()
@@ -122,7 +122,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void when_execute_a_request_to_create_an_item_then_the_amount_to_pay_must_be_retrieved() throws Exception {
+    void "when execute a request to create an item then the amount to pay must be retrieved"() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
         givenAServiceThatCreateAnItem(anItemCreationBody)
@@ -136,7 +136,7 @@ class ItemControllerTest {
 
 
     @Test
-    void when_execute_a_request_to_create_an_item_then_the_item_service_must_be_used() throws Exception {
+    void "when execute a request to create an item then the item service must be used"() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
         givenAServiceThatCreateAnItem(anItemCreationBody)
@@ -149,7 +149,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void when_execute_a_request_to_create_an_item_then_it_must_be_created_with_an_id() throws Exception {
+    void "when execute a request to create an item then it must be created with an id"() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
         givenAServiceThatCreateAnItem(anItemCreationBody)
@@ -162,7 +162,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void when_execute_a_request_to_create_an_item_then_it_must_contain_a_price() throws Exception {
+    void "when execute a request to create an item then it must contain a price"() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
         givenAServiceThatCreateAnItem(anItemCreationBody)
