@@ -79,7 +79,7 @@ class Item {
     }
 
     Boolean isBeingUsed() {
-        this.orders.find { it.isOpen() } != null
+        this.orders.any { it.isOpen() }
     }
 
     LocalDateTime expireRentDay() {
