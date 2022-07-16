@@ -17,7 +17,7 @@ class ItemHttpResponseFactoryAdapterTest {
     }
 
     @Test
-    void when_list_all_items_then_the_response_must_be_created_ok() {
+    void "when list all items then the response must be created ok"() {
         // GIVEN
         def items = [TestItemFactory.availablePS5(1), TestItemFactory.availableDrillWith(2)]
 

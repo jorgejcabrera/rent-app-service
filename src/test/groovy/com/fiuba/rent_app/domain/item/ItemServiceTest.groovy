@@ -37,7 +37,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void when_an_item_has_been_created_then_the_amount_to_pay_will_be_the_sum_of_the_price_and_assurance_amount() {
+    void "when an item has been created then the amount to pay will be the sum of the price and assurance amount"() {
         // GIVEN
         givenAnAccount()
         ItemCreationBody body = givenAItemCreationBody()
@@ -50,7 +50,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void when_the_service_creates_an_item_then_the_repository_must_be_used_to_save_it() {
+    void "when the service creates an item then the repository must be used to save it"() {
         // GIVEN
         givenAnAccount()
         ItemCreationBody body = givenAItemCreationBody()
@@ -63,7 +63,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void when_list_all_the_items_then_only_the_available_items_must_be_retrieved() {
+    void "when list all the items then only the available items must be retrieved"() {
         // GIVEN
         givenSomeSavedItems()
 
@@ -75,7 +75,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void when_republish_an_item_with_orders_then_all_of_those_must_be_closed() {
+    void "when republish an item with orders then all of those must be closed"() {
         // GIVEN
         givenARentedItem()
         ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
@@ -89,7 +89,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void when_republish_an_item_that_does_not_have_any_orders_then_it_must_work_ok() {
+    void "when republish an item that does not have any orders then it must work ok"() {
         // GIVEN
         givenACommonItem()
         ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)

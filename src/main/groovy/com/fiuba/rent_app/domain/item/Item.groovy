@@ -2,8 +2,6 @@ package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.order.Order
-import org.hibernate.annotations.Fetch
-import org.springframework.data.repository.cdi.Eager
 
 import javax.persistence.*
 import java.time.Duration

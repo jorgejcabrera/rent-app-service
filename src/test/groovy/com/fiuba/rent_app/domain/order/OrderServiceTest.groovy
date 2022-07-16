@@ -48,7 +48,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void when_create_an_order_for_a_nonexistent_item_then_it_must_throw_an_exception() {
+    void "when create an order for a nonexistent item then it must throw an exception"() {
         // GIVEN
         givenAnNoneExistentItem()
 
@@ -57,7 +57,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void when_try_to_order_a_rented_item_then_it_must_throw_an_exception() {
+    void "when try to order a rented item then it must throw an exception"() {
         // GIVEN
         givenARentedItem()
 
@@ -66,7 +66,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void when_ordering_an_available_item_then_a_valid_order_must_be_returned() {
+    void "when ordering an available item then a valid order must be returned"() {
         // GIVEN
         givenAnAvailableItem()
         givenAnOrderSuccessfullySaved()
@@ -79,7 +79,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void when_ordering_an_available_item_then_the_creation_date_must_be_indicated_in_the_order_info() {
+    void "when ordering an available item then the creation date must be indicated in the order info"() {
         // GIVEN
         givenAnAvailableItem()
         givenAnOrderSuccessfullySaved()
@@ -92,7 +92,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void when_the_borrower_is_the_item_owner_then_it_must_thrown_an_exception() {
+    void "when the borrower is the item owner then it must thrown an exception"() {
         // GIVEN
         givenAnAvailableItem()
 

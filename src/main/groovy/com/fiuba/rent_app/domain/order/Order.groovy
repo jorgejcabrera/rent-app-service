@@ -37,15 +37,7 @@ class Order {
     @Enumerated(STRING)
     private OrderStatus status
 
-    Order(Long lender, Long borrower, LocalDateTime createdAt, Item item) {
-        this.lender = lender
-        this.borrower = borrower
-        this.createdAt = createdAt
-        this.item = item
-        this.status = OPEN
-    }
-
-    Order() {}
+    protected Order() {}
 
     LocalDateTime createdAt() {
         return this.createdAt()
@@ -74,5 +66,5 @@ class Order {
     void finish() {
         this.status = FINISHED
     }
-    
+
 }
