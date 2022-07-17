@@ -63,7 +63,14 @@ class Order {
         this.status == OPEN
     }
 
+    Boolean canBeFinished() {
+        this.status != FINISHED
+    }
+
     void finish() {
+        if (!canBeFinished()) {
+            throw new OrderAlreadyFinishedException("The order ${this.id} is already closed")
+        }
         this.status = FINISHED
     }
 

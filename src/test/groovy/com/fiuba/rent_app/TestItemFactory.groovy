@@ -2,6 +2,7 @@ package com.fiuba.rent_app
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
+import com.fiuba.rent_app.domain.order.OrderStatus
 import com.fiuba.rent_app.domain.order.builder.OrderBuilder
 import com.fiuba.rent_app.domain.order.builder.OrderBuilderImpl
 
@@ -12,6 +13,22 @@ import static java.time.Duration.ofDays
 import static java.time.LocalDateTime.now
 
 class TestItemFactory {
+
+    static Item itemAlreadyFinished(Long lender) {
+        def item = new Item(
+                description: "Drill",
+                rentDuration: ofDays(5),
+                rentDay: now().minusDays(5),
+                account: accountOf(lender))
+        def order = new OrderBuilderImpl()
+                .item(item)
+                .borrowerId(2)
+                .build()
+        order.id = 1L
+        order.status = OrderStatus.FINISHED
+        item.addOrder(order)
+        item
+    }
 
     static Item rentedDrillWith(Long lender) {
         def item = new Item(

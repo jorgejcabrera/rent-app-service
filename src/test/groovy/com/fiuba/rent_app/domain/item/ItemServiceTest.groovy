@@ -6,6 +6,7 @@ import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.item.service.ItemServiceImpl
+import com.fiuba.rent_app.domain.order.OrderAlreadyFinishedException
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 import org.jetbrains.annotations.NotNull
@@ -35,6 +36,7 @@ class ItemServiceTest {
         MockitoAnnotations.initMocks(this);
         service = new ItemServiceImpl(itemRepository: itemRepository, accountRepository: accountRepository)
     }
+
 
     @Test
     void "when an item has been created then the amount to pay will be the sum of the price and assurance amount"() {
@@ -102,6 +104,18 @@ class ItemServiceTest {
         assertTrue(item.orders.find { it.isOpen() } == null)
     }
 
+    @Test
+    void "when republish an item associated with an order already closed, then an exception must be thrown"() {
+        // GIVEN
+        givenAnItemWithAnOrderFinished()
+        ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
+
+        // WHEN
+        Assertions.assertThrows(OrderAlreadyFinishedException.class) {
+            service.republish(body, 1)
+        }
+    }
+
     private void theItemWasSaved() {
         verify(itemRepository, times(1)).save(any())
     }
@@ -137,5 +151,10 @@ class ItemServiceTest {
     void givenACommonItem() {
         def commonItem = TestItemFactory.availableDrillWith(1)
         whenever(itemRepository.findById(any())).thenReturn(Optional.of(commonItem))
+    }
+
+    void givenAnItemWithAnOrderFinished() {
+        def itemAlreadyFinished = TestItemFactory.itemAlreadyFinished(1)
+        whenever(itemRepository.findById(any())).thenReturn(Optional.of(itemAlreadyFinished))
     }
 }
