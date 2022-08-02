@@ -4,7 +4,7 @@ import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.order.builder.OrderBuilderImpl
+
 import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
 import com.fiuba.rent_app.domain.order.builder.exception.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
@@ -126,6 +126,7 @@ class OrderServiceTest {
     }
 
     void givenAnOrderSuccessfullySaved() {
-        whenever(orderRepository.save(any())).thenReturn(new OrderBuilderImpl().item(drill).borrowerId(borrowerId).build())
+        whenever(orderRepository.save(any())).thenReturn(new Order(drill, borrowerId))
+
     }
 }

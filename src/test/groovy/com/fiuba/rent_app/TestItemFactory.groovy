@@ -2,9 +2,8 @@ package com.fiuba.rent_app
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
+import com.fiuba.rent_app.domain.order.Order
 import com.fiuba.rent_app.domain.order.OrderStatus
-import com.fiuba.rent_app.domain.order.builder.OrderBuilder
-import com.fiuba.rent_app.domain.order.builder.OrderBuilderImpl
 
 import java.time.Duration
 
@@ -20,10 +19,7 @@ class TestItemFactory {
                 rentDuration: ofDays(5),
                 rentDay: now().minusDays(5),
                 account: accountOf(lender))
-        def order = new OrderBuilderImpl()
-                .item(item)
-                .borrowerId(2)
-                .build()
+        def order = new Order(item, 2)
         order.id = 1L
         order.status = OrderStatus.FINISHED
         item.addOrder(order)
@@ -36,10 +32,7 @@ class TestItemFactory {
                 rentDuration: ofDays(5),
                 rentDay: now().minusDays(5),
                 account: accountOf(lender))
-        def order = new OrderBuilderImpl()
-                .item(item)
-                .borrowerId(2)
-                .build()
+        def order = new Order(item, 2)
         order.id = 1L
         item.addOrder(order)
         item

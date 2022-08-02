@@ -1,12 +1,14 @@
 package com.fiuba.rent_app.domain.order
 
 import com.fiuba.rent_app.domain.item.Item
+import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
 
 import javax.persistence.*
 import java.time.LocalDateTime
 
 import static com.fiuba.rent_app.domain.order.OrderStatus.FINISHED
 import static com.fiuba.rent_app.domain.order.OrderStatus.OPEN
+import static java.time.LocalDateTime.now
 import static javax.persistence.CascadeType.ALL
 import static javax.persistence.EnumType.STRING
 import static javax.persistence.GenerationType.AUTO
@@ -37,7 +39,19 @@ class Order {
     @Enumerated(STRING)
     private OrderStatus status
 
-    protected Order() {}
+    Order(Item item, Long borrowerId) {
+        this.lender = item.lenderId
+        this.borrower = borrowerId
+        this.createdAt = now()
+        this.item = item
+        this.status = OPEN
+
+        if (!this.isValid()) {
+            throw new InvalidRenterException("The borrower ${this.getBorrower()} can't be the owner of the ${this.getItem().getId()} item")
+        }
+    }
+
+    Order() {}
 
     LocalDateTime createdAt() {
         return this.createdAt()
