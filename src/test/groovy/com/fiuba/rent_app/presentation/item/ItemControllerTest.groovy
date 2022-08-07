@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.configuration.ItemBeanDefinition
+import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
+import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.builder.ItemBuilderImpl
 import com.fiuba.rent_app.domain.item.service.ItemLenderDoesNotExistException
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
@@ -14,10 +15,10 @@ import com.fiuba.rent_app.presentation.ExceptionHandlerAdvice
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponse
 import com.fiuba.rent_app.presentation.item.response.ItemHttpResponseFactory
 import org.jetbrains.annotations.NotNull
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
+import org.mockito.stubbing.OngoingStubbing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -26,9 +27,9 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static java.math.BigDecimal.valueOf
+import static java.time.Duration.ofDays
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.mockito.ArgumentMatchers.any
@@ -47,10 +48,7 @@ class ItemControllerTest {
     @Autowired
     private ItemController controller
 
-    @MockBean
-    private JpaItemRepository jpaItemRepository
-
-    @MockBean
+    @Autowired
     private ItemService itemService
 
     @Autowired
@@ -58,6 +56,12 @@ class ItemControllerTest {
 
     @Autowired
     private ObjectMapper mapper
+
+    @MockBean
+    private JpaItemRepository jpaItemRepository
+
+    @MockBean
+    private JpaAccountRepository accountRepository
 
     @BeforeEach
     private void setUp() {
@@ -106,6 +110,24 @@ class ItemControllerTest {
     }
 
     @Test
+    void "when the an item does not have a title then an exception must be thrown"() {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody()
+        givenAnItemLenderThatDoesNotExist()
+
+        // WHEN
+        def response = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/user/1/item")
+                .content(anItemCreationBody)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getContentAsString()
+
+        assertEquals("""{"errorCode":"invalid_borrower","message":"The account does not exist."}""", response)
+    }
+
+    @Test
     void "when republish a valid item then it must work ok"() {
         // GIVEN
         String anItemRepublishingBody = giveAnItemRepublishingBody()
@@ -125,7 +147,7 @@ class ItemControllerTest {
     void "when execute a request to create an item then the amount to pay must be retrieved"() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
-        givenAServiceThatCreateAnItem(anItemCreationBody)
+        givenAnExistingAccount()
 
         // WHEN
         String response = whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
@@ -133,39 +155,12 @@ class ItemControllerTest {
         // THEN
         thenTheItemMustContainAnTotalAmountToPay(response)
     }
-
-
-    @Test
-    void "when execute a request to create an item then the item service must be used"() throws Exception {
-        // GIVEN
-        String anItemCreationBody = givenAnItemCreationBody()
-        givenAServiceThatCreateAnItem(anItemCreationBody)
-
-        // WHEN
-        whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
-
-        // THEN
-        thenTheUserServiceWasUsed()
-    }
-
-    @Test
-    void "when execute a request to create an item then it must be created with an id"() throws Exception {
-        // GIVEN
-        String anItemCreationBody = givenAnItemCreationBody()
-        givenAServiceThatCreateAnItem(anItemCreationBody)
-
-        // WHEN
-        String response = whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
-
-        //THEN
-        thenTheItemMustContainAnId(response)
-    }
-
+    
     @Test
     void "when execute a request to create an item then it must contain a price"() throws Exception {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
-        givenAServiceThatCreateAnItem(anItemCreationBody)
+        givenAnExistingAccount()
 
         // WHEN
         String response = whenExecuteTheRequestToCreateAnItem(anItemCreationBody)
@@ -173,6 +168,7 @@ class ItemControllerTest {
         //THEN
         thenTheItemContainsAPrice(response)
     }
+
 
     @NotNull
     private String whenExecuteTheRequestToCreateAnItem(String anItemCreationBody) throws Exception {
@@ -185,20 +181,9 @@ class ItemControllerTest {
                 .andReturn().getResponse().getContentAsString()
     }
 
-    private void givenAServiceThatCreateAnItem(String anItemCreationBody) throws JsonProcessingException {
-        Item newItem = bodyAsItem(anItemCreationBody)
-        whenever(itemService.create(any(), any())).thenReturn(newItem)
-    }
-
     private Item bodyAsItem(String anItemCreationBody) throws JsonProcessingException {
-        ItemCreationBody body = mapper.readValue(anItemCreationBody, ItemCreationBody.class);
-        return new ItemBuilderImpl()
-                .price(body.price)
-                .rentDaysDuration(body.rentingDays)
-                .description(body.description)
-                .assuranceCost(body.assuranceCost)
-                .id(1L)
-                .build()
+        ItemCreationBody body = mapper.readValue(anItemCreationBody, ItemCreationBody.class)
+        return new Item(price: body.price, rentDuration: ofDays(body.rentingDays), description: body.description, assuranceCost: body.assuranceCost, id: 1L)
     }
 
     private void thenTheItemMustContainAnTotalAmountToPay(String response) throws JsonProcessingException {
@@ -239,17 +224,21 @@ class ItemControllerTest {
         assertEquals(valueOf(10.0), itemCreated.price)
     }
 
-    void givenAnItemRepublished() {
+    private void givenAnItemRepublished() {
         Item commonItem = TestItemFactory.availableDrillWith(1)
-        whenever(itemService.republish(any(), any())).thenReturn(commonItem)
+        whenever(jpaItemRepository.findById(any())).thenReturn(Optional.of(commonItem))
     }
 
-    void givenAnItemLenderThatDoesNotExist() {
-        whenever(itemService.create(any(), any())).thenThrow(new ItemLenderDoesNotExistException("The account does not exist."))
+    private void givenAnItemLenderThatDoesNotExist() {
+        whenever(accountRepository.findById(any())).thenThrow(new ItemLenderDoesNotExistException("The account does not exist."))
     }
 
-    void givenAnItemThatDoesNotExist() {
-        whenever(itemService.republish(any(), any())).thenThrow(new ItemNotFoundException("The item does not exist."))
+    private void givenAnItemThatDoesNotExist() {
+        whenever(jpaItemRepository.findById(any())).thenThrow(new ItemNotFoundException("The item does not exist."))
+    }
+
+    private void givenAnExistingAccount() {
+        whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: 1L, email: "cabrerajjorge@gmail.com")))
     }
 
 }

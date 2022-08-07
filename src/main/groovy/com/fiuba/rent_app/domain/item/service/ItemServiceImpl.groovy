@@ -4,12 +4,11 @@ import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.item.builder.ItemBuilderImpl
+
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 
-import java.time.Duration
 import java.util.stream.Collectors
 
 import static java.time.Duration.*

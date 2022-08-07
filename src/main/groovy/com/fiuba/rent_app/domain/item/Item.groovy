@@ -42,6 +42,15 @@ class Item {
     @Column(name = "rent_day")
     private LocalDateTime rentDay
 
+    Item(Account lender, String description, BigDecimal price, String title, Duration rentDuration, BigDecimal assuranceCost) {
+        this.account = lender
+        this.description = description
+        this.price = price
+        this.title = title
+        this.rentDuration = rentDuration
+        this.assuranceCost  = assuranceCost
+    }
+
     Item() {
         this.orders = new HashSet<>()
     }
