@@ -13,6 +13,7 @@ import java.time.Duration
 import java.util.stream.Collectors
 
 import static java.time.Duration.*
+import static java.time.LocalDateTime.now
 
 class ItemServiceImpl implements ItemService {
 
@@ -24,14 +25,14 @@ class ItemServiceImpl implements ItemService {
     Item create(ItemCreationBody body, Long lenderId) {
         Account lender = accountRepository.findById(lenderId)
                 .orElseThrow { new ItemLenderDoesNotExistException("The account $lenderId does not exist.") }
-        Item item = new ItemBuilderImpl()
-                .price(body.price)
-                .rentDaysDuration(body.rentingDays)
-                .description(body.description)
-                .assuranceCost(body.assuranceCost)
-                .lender(lender)
-                .title(body.title)
-                .build()
+        Item item = new Item(
+                account: lender,
+                description: body.description,
+                price: body.price,
+                title: body.title,
+                rentDay: now(),
+                rentDuration: ofDays(body.rentingDays),
+                assuranceCost: body.assuranceCost)
         itemRepository.save(item)
         item
     }

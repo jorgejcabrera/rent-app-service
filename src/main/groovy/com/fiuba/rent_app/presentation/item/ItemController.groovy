@@ -41,4 +41,3 @@ class ItemController {
         return responseFactory.from(item)
     }
 }
-

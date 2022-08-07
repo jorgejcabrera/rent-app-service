@@ -12,7 +12,7 @@ class ItemCreationBody {
     @JsonProperty("assurance_cost")
     public BigDecimal assuranceCost
 
-    @JsonProperty(" renting_days")
+    @JsonProperty("renting_days")
     public Integer rentingDays
 
     @JsonProperty("title")

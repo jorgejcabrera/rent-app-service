@@ -15,6 +15,7 @@ services:
 
   app:
     container_name: rent-app
+    image: rent-app
     build:
       context: .
       dockerfile: Dockerfile
