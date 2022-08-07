@@ -23,6 +23,7 @@ class OrderServiceAdapter implements OrderService {
         }
         Order order = new Order(item, borrowerId)
         orderRepository.save(order)
+        order
     }
 
 }

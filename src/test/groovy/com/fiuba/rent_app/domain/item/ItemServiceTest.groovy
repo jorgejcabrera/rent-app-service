@@ -132,7 +132,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void "when try to return a rented item by someone different of the lender"() {
+    void "when try to return a rented item by someone different of the lender, then an error must be thrown"() {
         // GIVEN
         Long lender = 101
         Long itemId = 1

@@ -4,7 +4,6 @@ import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.item.Item
-
 import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
 import com.fiuba.rent_app.domain.order.builder.exception.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
@@ -48,7 +47,21 @@ class OrderServiceTest {
     }
 
     @Test
-    void "when create an order for a nonexistent item then it must throw an exception"() {
+    void "when creates an order, then expired rent day must be set ok"() {
+        // GIVEN
+        Item item = givenAnAvailableItem()
+
+        // WHEN
+        Order order = service.createFor(itemId, borrowerId)
+
+        // THEN
+        assertNotNull(order.expireRentDay())
+        assertTrue(LocalDateTime.now() < order.expireRentDay())
+
+    }
+
+    @Test
+    void "when creates an order for a nonexistent item then it must throw an exception"() {
         // GIVEN
         givenAnNoneExistentItem()
 
@@ -110,8 +123,9 @@ class OrderServiceTest {
         whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(TestItemFactory.rentedDrillWith(lenderId)))
     }
 
-    void givenAnAvailableItem() {
+    Item givenAnAvailableItem() {
         whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(drill))
+        return drill
     }
 
     static void thenTheOrderWasSuccessfullyCreated(Order order) {

@@ -40,6 +40,9 @@ class Order {
     @Enumerated(STRING)
     private OrderStatus status
 
+    @Column(name = "rent_day")
+    private LocalDateTime rentDay
+
     Order(Item item, Long borrowerId) {
         this.lender = item.lenderId
         this.borrower = borrowerId
@@ -47,12 +50,17 @@ class Order {
         this.item = item
         this.status = OPEN
 
+        this.rentDay = now()
         if (!this.isValid()) {
             throw new InvalidRenterException("The borrower ${this.getBorrower()} can't be the owner of the ${this.getItem().getId()} item")
         }
     }
 
     Order() {}
+
+    LocalDateTime expireRentDay() {
+        this.rentDay + this.item.rentDuration
+    }
 
     LocalDateTime createdAt() {
         return this.createdAt()
