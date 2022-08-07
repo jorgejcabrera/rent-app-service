@@ -7,6 +7,7 @@ import javax.persistence.*
 import java.time.Duration
 import java.time.LocalDateTime
 
+import static java.time.Duration.ofDays
 import static javax.persistence.GenerationType.AUTO
 
 @Entity(name = "item")
@@ -42,13 +43,14 @@ class Item {
     @Column(name = "rent_day")
     private LocalDateTime rentDay
 
-    Item(Account lender, String description, BigDecimal price, String title, Duration rentDuration, BigDecimal assuranceCost) {
+    Item(Account lender, String description, BigDecimal price, String title, Integer rentDuration, BigDecimal assuranceCost) {
         this.account = lender
         this.description = description
         this.price = price
         this.title = title
-        this.rentDuration = rentDuration
-        this.assuranceCost  = assuranceCost
+        this.rentDuration = rentDuration != null ? ofDays(rentDuration) : null
+        this.assuranceCost = assuranceCost
+        this.validate()
     }
 
     Item() {
@@ -82,6 +84,19 @@ class Item {
     Duration getRentDuration() {
         rentDuration
     }
+
+    void validate() {
+        if (this.price == null) {
+            throw new EmptyItemPriceException("Price must be not empty")
+        }
+        if (this.title == null) {
+            throw new EmptyItemTitleException("Title must be not empty")
+        }
+        if (this.rentDuration == null) {
+            throw new InvalidRentDurationException("A rent duration must be specified")
+        }
+    }
+
 
     Boolean canBeRented() {
         !this.isBeingUsed()

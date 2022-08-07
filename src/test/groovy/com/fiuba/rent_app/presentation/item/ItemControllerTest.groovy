@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
-import org.mockito.stubbing.OngoingStubbing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -27,14 +26,12 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static java.math.BigDecimal.valueOf
-import static java.time.Duration.ofDays
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.mockito.ArgumentMatchers.any
-import static org.mockito.Mockito.times
-import static org.mockito.Mockito.verify
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -110,7 +107,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void "when the an item does not have a title then an exception must be thrown"() {
+    void "when try to create an item with a lender that not exist,then an exception must be thrown"() {
         // GIVEN
         String anItemCreationBody = givenAnItemCreationBody()
         givenAnItemLenderThatDoesNotExist()
@@ -125,6 +122,60 @@ class ItemControllerTest {
                 .andReturn().getResponse().getContentAsString()
 
         assertEquals("""{"errorCode":"invalid_borrower","message":"The account does not exist."}""", response)
+    }
+
+    @Test
+    void "when the item does not have a rent duration, then it must not be valid"() {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody(new ItemCreationBody(description: "Ps5", title: "Ps5", price: 20.0))
+        givenAnExistingAccount()
+
+        // WHEN
+        def response = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/user/1/item")
+                .content(anItemCreationBody)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isPreconditionFailed())
+                .andReturn().getResponse().getContentAsString()
+
+        assertEquals("""{"errorCode":"invalid_rent_duration","message":"A rent duration must be specified"}""", response)
+    }
+
+    @Test
+    void "when the item does not have a title, then it must not be valid"() {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody(new ItemCreationBody(description: "Ps5", price: 20.0, rentingDays: 1))
+        givenAnExistingAccount()
+
+        // WHEN
+        def response = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/user/1/item")
+                .content(anItemCreationBody)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isPreconditionFailed())
+                .andReturn().getResponse().getContentAsString()
+
+        assertEquals("""{"errorCode":"item_title_empty","message":"Title must be not empty"}""", response)
+    }
+
+    @Test
+    void "when the item does not have a price, then it must not be valid"() {
+        // GIVEN
+        String anItemCreationBody = givenAnItemCreationBody(new ItemCreationBody(description: "Ps5", title: "Ps5", rentingDays: 1))
+        givenAnExistingAccount()
+
+        // WHEN
+        def response = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/user/1/item")
+                .content(anItemCreationBody)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isPreconditionFailed())
+                .andReturn().getResponse().getContentAsString()
+
+        assertEquals("""{"errorCode":"item_price_empty","message":"Price must be not empty"}""", response)
     }
 
     @Test
@@ -155,7 +206,7 @@ class ItemControllerTest {
         // THEN
         thenTheItemMustContainAnTotalAmountToPay(response)
     }
-    
+
     @Test
     void "when execute a request to create an item then it must contain a price"() throws Exception {
         // GIVEN
@@ -181,31 +232,18 @@ class ItemControllerTest {
                 .andReturn().getResponse().getContentAsString()
     }
 
-    private Item bodyAsItem(String anItemCreationBody) throws JsonProcessingException {
-        ItemCreationBody body = mapper.readValue(anItemCreationBody, ItemCreationBody.class)
-        return new Item(price: body.price, rentDuration: ofDays(body.rentingDays), description: body.description, assuranceCost: body.assuranceCost, id: 1L)
-    }
-
     private void thenTheItemMustContainAnTotalAmountToPay(String response) throws JsonProcessingException {
         ItemHttpResponse httpResponse = mapper.readValue(response, ItemHttpResponse.class)
         assertNotNull(httpResponse.totalToPay)
     }
 
-    private void thenTheItemMustContainAnId(String response) throws JsonProcessingException {
-        Item itemCreated = responseAsItem(response)
-        assertNotNull(itemCreated.getId())
-    }
-
-    private Item responseAsItem(String response) throws JsonProcessingException {
-        return mapper.readValue(response, Item.class)
-    }
-
-    private String givenAnItemCreationBody() throws JsonProcessingException {
-        return mapper.writeValueAsString(new ItemCreationBody(
-                description: "mi item",
-                assuranceCost: valueOf(1000),
-                price: valueOf(10.0),
-                rentingDays: 2))
+    private String givenAnItemCreationBody(ItemCreationBody item = new ItemCreationBody(
+            description: "mi item",
+            title: "Item",
+            assuranceCost: valueOf(1000),
+            price: valueOf(10.0),
+            rentingDays: 2)) throws JsonProcessingException {
+        return mapper.writeValueAsString(item)
     }
 
     private String giveAnItemRepublishingBody() throws JsonProcessingException {
@@ -213,10 +251,6 @@ class ItemControllerTest {
                 price: 10.0,
                 rentingDays: 2
         ))
-    }
-
-    private void thenTheUserServiceWasUsed() {
-        verify(itemService, times(1)).create(any(), any())
     }
 
     private void thenTheItemContainsAPrice(String response) throws JsonProcessingException {
