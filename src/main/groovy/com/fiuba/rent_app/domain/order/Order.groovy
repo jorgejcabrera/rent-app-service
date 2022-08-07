@@ -20,7 +20,8 @@ class Order {
     @Id
     @GeneratedValue(strategy = AUTO)
     @Column(name = "id")
-    private Long id
+    public
+    Long id
 
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "item_id", nullable = false)

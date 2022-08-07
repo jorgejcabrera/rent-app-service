@@ -8,6 +8,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 import static java.time.Duration.ofDays
+import static java.time.LocalDateTime.*
 import static javax.persistence.GenerationType.AUTO
 
 @Entity(name = "item")
@@ -48,6 +49,7 @@ class Item {
         this.description = description
         this.price = price
         this.title = title
+        this.rentDay = now()
         this.rentDuration = rentDuration != null ? ofDays(rentDuration) : null
         this.assuranceCost = assuranceCost
         this.validate()
