@@ -5,10 +5,8 @@ import com.fiuba.rent_app.domain.order.Order
 
 import javax.persistence.*
 import java.time.Duration
-import java.time.LocalDateTime
 
 import static java.time.Duration.ofDays
-import static java.time.LocalDateTime.*
 import static javax.persistence.GenerationType.AUTO
 
 @Entity(name = "item")
@@ -104,8 +102,8 @@ class Item {
         this.orders.any { it.isOpen() }
     }
 
-    Boolean isBeingUsedBy(Long userId) {
-        this.orders.any { it.lender == userId && it.isOpen() }
+    Boolean isBeingUsedBy(Long borrowerId) {
+        this.orders.any { it.borrower == borrowerId && it.isOpen() }
     }
 
     void addOrder(Order order) {

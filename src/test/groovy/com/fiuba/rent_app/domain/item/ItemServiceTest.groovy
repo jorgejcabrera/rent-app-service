@@ -120,12 +120,12 @@ class ItemServiceTest {
     @Test
     void "when return a rented item, then it can be rented again"() {
         // GIVEN
-        Long lender = 1
+        Long borrower = 2
         Long itemId = 1
-        givenARentedItem(lender, itemId)
+        givenARentedItem(borrower, itemId)
 
         // WHEN
-        Item item = service.free(itemId, lender)
+        Item item = service.free(itemId, borrower)
 
         // THEN
         Assertions.assertTrue(item.canBeRented())
@@ -134,13 +134,13 @@ class ItemServiceTest {
     @Test
     void "when try to return a rented item by someone different of the lender, then an error must be thrown"() {
         // GIVEN
-        Long lender = 101
+        Long borrowerId = 101
         Long itemId = 1
-        givenARentedItem(1, itemId)
+        givenARentedItem(2, itemId)
 
         // WHEN
         assertThrows(InvalidLenderIdException.class) {
-            service.free(itemId, lender)
+            service.free(itemId, borrowerId)
         }
     }
 
@@ -163,17 +163,17 @@ class ItemServiceTest {
         whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: 1L, email: "jocabrera@fi.uba.ar")))
     }
 
-    def givenSomeSavedItems() {
+    def givenSomeSavedItems(Long borrowerId = 2) {
         List<Item> items = [
-                TestItemFactory.rentedDrillWith(1),
+                TestItemFactory.rentedDrillWith(borrowerId),
                 new Item(title: "play station 5"),
                 new Item(title: "computadora")
         ]
         whenever(itemRepository.findAll()).thenReturn(items)
     }
 
-    void givenARentedItem(Long lender = 1, Long itemId = 1) {
-        def rentedItem = TestItemFactory.rentedDrillWith(lender, itemId)
+    void givenARentedItem(Long borrowerId = 2, Long itemId = 1) {
+        def rentedItem = TestItemFactory.rentedDrillWith(borrowerId, itemId)
         whenever(itemRepository.findById(any())).thenReturn(Optional.of(rentedItem))
     }
 

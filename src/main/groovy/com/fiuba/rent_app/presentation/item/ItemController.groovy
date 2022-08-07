@@ -47,6 +47,6 @@ class ItemController {
             @RequestHeader("x-caller-id") Long userId
     ) {
         itemService.free(itemId, userId)
-        return ResponseEntity.ok()
+        return ResponseEntity.ok().build()
     }
 }

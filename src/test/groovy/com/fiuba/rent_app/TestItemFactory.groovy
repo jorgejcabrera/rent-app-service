@@ -9,7 +9,6 @@ import java.time.Duration
 
 import static java.math.BigDecimal.valueOf
 import static java.time.Duration.ofDays
-import static java.time.LocalDateTime.now
 
 class TestItemFactory {
 
@@ -25,13 +24,13 @@ class TestItemFactory {
         item
     }
 
-    static Item rentedDrillWith(Long lender, Long itemId = 1) {
+    static Item rentedDrillWith(Long borrowerId, Long itemId = 1) {
         def item = new Item(
                 id: itemId,
                 description: "Drill",
                 rentDuration: ofDays(5),
-                account: accountOf(lender))
-        def order = new Order(item, 2)
+                account: accountOf(1))
+        def order = new Order(item, borrowerId)
         order.id = 1L
         item.addOrder(order)
         item
