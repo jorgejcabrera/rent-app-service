@@ -41,15 +41,11 @@ class Item {
     @Column(name = "rent_duration")
     private Duration rentDuration
 
-    @Column(name = "rent_day")
-    private LocalDateTime rentDay
-
     Item(Account lender, String description, BigDecimal price, String title, Integer rentDuration, BigDecimal assuranceCost) {
         this.account = lender
         this.description = description
         this.price = price
         this.title = title
-        this.rentDay = now()
         this.rentDuration = rentDuration != null ? ofDays(rentDuration) : null
         this.assuranceCost = assuranceCost
         this.validate()
@@ -110,10 +106,6 @@ class Item {
 
     Boolean isBeingUsedBy(Long userId) {
         this.orders.any { it.lender == userId && it.isOpen() }
-    }
-
-    LocalDateTime expireRentDay() {
-        this.rentDay + this.rentDuration
     }
 
     void addOrder(Order order) {

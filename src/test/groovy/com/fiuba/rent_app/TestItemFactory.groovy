@@ -17,7 +17,6 @@ class TestItemFactory {
         def item = new Item(
                 description: "Drill",
                 rentDuration: ofDays(5),
-                rentDay: now().minusDays(5),
                 account: accountOf(lender))
         def order = new Order(item, 2)
         order.id = 1L
@@ -31,7 +30,6 @@ class TestItemFactory {
                 id: itemId,
                 description: "Drill",
                 rentDuration: ofDays(5),
-                rentDay: now().minusDays(5),
                 account: accountOf(lender))
         def order = new Order(item, 2)
         order.id = 1L
@@ -45,7 +43,6 @@ class TestItemFactory {
                 id: 1001,
                 rentDuration: rentDuration,
                 assuranceCost: valueOf(1),
-                rentDay: now(),
                 price: valueOf(10L),
                 description: "Drill",
                 account: accountOf(lender))
@@ -57,7 +54,6 @@ class TestItemFactory {
                 id: 1002,
                 rentDuration: rentDuration,
                 assuranceCost: valueOf(1),
-                rentDay: now(),
                 price: valueOf(500L),
                 description: "PS5",
                 account: accountOf(lender))

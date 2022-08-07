@@ -13,7 +13,7 @@ class OrderHttpResponseFactoryAdapter implements OrderHttpResponseFactory {
                 .body(new OrderHttpResponse(
                         id: order.id,
                         lenderId: order.lender,
-                        expiredRentDate: order.item.expireRentDay()
+                        expiredRentDate: order.expireRentDay()
                 ))
     }
 }

@@ -134,13 +134,12 @@ class OrderServiceTest {
 
     void thenTheExpiredRentDateWasSuccessfullyCalculated(Order order) {
         LocalDateTime expectedDate = LocalDateTime.now() + rentDuration
-        assertEquals(expectedDate.dayOfMonth, order.item.expireRentDay().dayOfMonth)
-        assertEquals(expectedDate.month, order.item.expireRentDay().month)
-        assertEquals(expectedDate.year, order.item.expireRentDay().year)
+        assertEquals(expectedDate.dayOfMonth, order.expireRentDay().dayOfMonth)
+        assertEquals(expectedDate.month, order.expireRentDay().month)
+        assertEquals(expectedDate.year, order.expireRentDay().year)
     }
 
     void givenAnOrderSuccessfullySaved() {
         whenever(orderRepository.save(any())).thenReturn(new Order(drill, borrowerId))
-
     }
 }
