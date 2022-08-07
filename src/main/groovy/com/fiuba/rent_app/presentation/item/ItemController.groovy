@@ -40,4 +40,13 @@ class ItemController {
         Item item = itemService.republish(body, itemId)
         return responseFactory.from(item)
     }
+
+    @PutMapping(value = "/v1/item/{item_id}/returning")
+    ResponseEntity returning(
+            @PathVariable("item_id") Long itemId,
+            @RequestHeader("x-caller-id") Long userId
+    ) {
+        itemService.free(itemId, userId)
+        return ResponseEntity.ok()
+    }
 }

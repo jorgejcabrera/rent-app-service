@@ -108,6 +108,10 @@ class Item {
         this.orders.any { it.isOpen() }
     }
 
+    Boolean isBeingUsedBy(Long userId) {
+        this.orders.any { it.lender == userId && it.isOpen() }
+    }
+
     LocalDateTime expireRentDay() {
         this.rentDay + this.rentDuration
     }
@@ -120,6 +124,15 @@ class Item {
         this.finishAllOrders()
         this.rentDuration = rentDuration
         this.price = price
+    }
+
+    // TODO el rent day tiene que se parte de la orden no del item
+    void free() {
+        Order order = this.orders.find { it.isOpen() }
+        if (order == null) {
+            throw new ItemNotRentedException("The item ${this.id} is not being used")
+        }
+        order.finish()
     }
 
     private finishAllOrders() {

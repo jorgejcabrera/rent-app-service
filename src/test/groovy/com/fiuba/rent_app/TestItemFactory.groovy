@@ -26,8 +26,9 @@ class TestItemFactory {
         item
     }
 
-    static Item rentedDrillWith(Long lender) {
+    static Item rentedDrillWith(Long lender, Long itemId = 1) {
         def item = new Item(
+                id: itemId,
                 description: "Drill",
                 rentDuration: ofDays(5),
                 rentDay: now().minusDays(5),

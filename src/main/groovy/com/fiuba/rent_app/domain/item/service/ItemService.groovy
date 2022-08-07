@@ -10,4 +10,6 @@ interface ItemService {
     List<Item> listAll()
 
     Item republish(ItemRepublishingBody body, Long itemId)
+
+    Item free(Long itemId, Long lenderId)
 }

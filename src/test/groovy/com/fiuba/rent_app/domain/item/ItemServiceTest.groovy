@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations
 
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static com.nhaarman.mockitokotlin2.VerificationKt.verify
+import static org.junit.jupiter.api.Assertions.assertThrows
 import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.times
@@ -111,8 +112,35 @@ class ItemServiceTest {
         ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
 
         // WHEN
-        Assertions.assertThrows(OrderAlreadyFinishedException.class) {
+        assertThrows(OrderAlreadyFinishedException.class) {
             service.republish(body, 1)
+        }
+    }
+
+    @Test
+    void "when return a rented item, then it can be rented again"() {
+        // GIVEN
+        Long lender = 1
+        Long itemId = 1
+        givenARentedItem(lender, itemId)
+
+        // WHEN
+        Item item = service.free(itemId, lender)
+
+        // THEN
+        Assertions.assertTrue(item.canBeRented())
+    }
+
+    @Test
+    void "when try to return a rented item by someone different of the lender"() {
+        // GIVEN
+        Long lender = 101
+        Long itemId = 1
+        givenARentedItem(1, itemId)
+
+        // WHEN
+        assertThrows(InvalidLenderIdException.class) {
+            service.free(itemId, lender)
         }
     }
 
@@ -123,6 +151,7 @@ class ItemServiceTest {
     @NotNull
     private static ItemCreationBody givenAItemCreationBody() {
         return new ItemCreationBody(
+                title: "My item",
                 description: "",
                 price: BigDecimal.valueOf(10L),
                 rentingDays: 1,
@@ -143,8 +172,8 @@ class ItemServiceTest {
         whenever(itemRepository.findAll()).thenReturn(items)
     }
 
-    void givenARentedItem() {
-        def rentedItem = TestItemFactory.rentedDrillWith(1)
+    void givenARentedItem(Long lender = 1, Long itemId = 1) {
+        def rentedItem = TestItemFactory.rentedDrillWith(lender, itemId)
         whenever(itemRepository.findById(any())).thenReturn(Optional.of(rentedItem))
     }
 

@@ -3,17 +3,16 @@ package com.fiuba.rent_app.domain.item.service
 import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
+import com.fiuba.rent_app.domain.item.InvalidLenderIdException
 import com.fiuba.rent_app.domain.item.Item
 
 import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 
-import java.time.Duration
 import java.util.stream.Collectors
 
 import static java.time.Duration.*
-import static java.time.LocalDateTime.now
 
 class ItemServiceImpl implements ItemService {
 
@@ -44,5 +43,17 @@ class ItemServiceImpl implements ItemService {
                 .orElseThrow { new ItemNotFoundException("The item $itemId does not exist.") }
         item.republish(body.price, ofDays(body.rentingDays))
         return item
+    }
+
+    @Override
+    Item free(Long itemId, Long lenderId) {
+        def item = itemRepository.findById(itemId)
+                .orElseThrow { new ItemNotFoundException("The item $itemId does not exist.") }
+        if (!item.isBeingUsedBy(lenderId)) {
+            throw new InvalidLenderIdException("The item $item could not be returning by $lenderId")
+        }
+        item.free()
+        itemRepository.save(item)
+        item
     }
 }
