@@ -21,7 +21,6 @@ class AccountFactory {
                     item: TestItemFactory.withExpiredOrderBy(debtorId),
                     rentDay: LocalDateTime.now().minusDays(10),
                     status: OrderStatus.OPEN,
-                    borrower: debtorId
             )]
     )
 
