@@ -114,7 +114,7 @@ class Item {
     }
 
     Boolean isBeingUsedBy(Long borrowerId) {
-        this.orders.any { it.borrower == borrowerId && it.isOpen() }
+        this.orders.any { it.account.id == borrowerId && it.isOpen() }
     }
 
     void addOrder(Order order) {

@@ -26,7 +26,7 @@ class TestItemFactory {
                 item: item,
                 rentDay: LocalDateTime.now().minusDays(10),
                 status: OrderStatus.OPEN,
-                borrower: debtorId
+
         )
         item.addOrder(order)
         item

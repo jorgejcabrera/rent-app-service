@@ -32,14 +32,7 @@ class Order {
 
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "order_id", nullable = false)
-    private Account account
-
-    // TODO puedo llegar al lender a traves del item, y el borrower va a ser account
-    @Column(name = "lender_id")
-    private Long lender
-
-    @Column(name = "borrower_id")
-    private Long borrower
+    Account account
 
     @Column(name = "created_at")
     private LocalDateTime createdAt
@@ -52,19 +45,21 @@ class Order {
     private LocalDateTime rentDay
 
     Order(Item item, Account borrower) {
-        this.lender = item.lenderId
         this.account = borrower
-        this.borrower = borrower.id
         this.createdAt = now()
         this.item = item
         this.status = OPEN
         this.rentDay = now()
         if (!this.isValid()) {
-            throw new InvalidCallerException("The borrower ${this.getBorrower()} can't be the owner of the ${this.getItem().getId()} item")
+            throw new InvalidCallerException("The borrower ${this.account.id} can't be the owner of the ${this.getItem().getId()} item")
         }
         if (borrower.hasDebt()) {
-            throw new AccountWithDebtException("The borrower ${this.getBorrower()} has items pending to be return")
+            throw new AccountWithDebtException("The borrower ${this.account.id} has items pending to be return")
         }
+    }
+
+    Long getLender() {
+        return this.item.account.id
     }
 
     Order() {}
@@ -81,16 +76,8 @@ class Order {
         this.item
     }
 
-    Long getLender() {
-        this.lender
-    }
-
-    Long getBorrower() {
-        this.borrower
-    }
-
     Boolean isValid() {
-        this.getLender() != this.getBorrower()
+        this.getLender() != this.account.id
     }
 
     Boolean isOpen() {
