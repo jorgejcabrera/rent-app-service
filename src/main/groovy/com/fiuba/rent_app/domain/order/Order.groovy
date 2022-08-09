@@ -30,6 +30,11 @@ class Order {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item
 
+    @ManyToOne(cascade = ALL)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Account account
+
+    // TODO puedo llegar al lender a traves del item, y el borrower va a ser account
     @Column(name = "lender_id")
     private Long lender
 

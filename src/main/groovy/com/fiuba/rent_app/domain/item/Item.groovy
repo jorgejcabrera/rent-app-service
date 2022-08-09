@@ -139,8 +139,4 @@ class Item {
         order.finish()
     }
 
-    private finishAllOrders() {
-        this.orders.forEach { it.finish() }
-    }
-
 }

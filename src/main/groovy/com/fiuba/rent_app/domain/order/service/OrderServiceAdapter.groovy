@@ -28,6 +28,8 @@ class OrderServiceAdapter implements OrderService {
             throw new ItemIsNotAvailableForOrderingException("The item ${item.getId()} is not avilable.")
         }
         Order order = new Order(item, borrower)
+        borrower.addOrder(order)
+        accountRepository.save(borrower)
         orderRepository.save(order)
         order
     }
