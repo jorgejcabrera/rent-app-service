@@ -12,12 +12,15 @@ import static java.time.Duration.ofDays
 
 class TestItemFactory {
 
+
+    static Account borrower = new Account(id: 2, email: "cabrerajjorge@gmail.com")
+
     static Item itemAlreadyFinished(Long lender) {
         def item = new Item(
                 description: "Drill",
                 rentDuration: ofDays(5),
                 account: accountOf(lender))
-        def order = new Order(item, 2)
+        def order = new Order(item, borrower)
         order.id = 1L
         order.status = OrderStatus.FINISHED
         item.addOrder(order)
@@ -30,7 +33,7 @@ class TestItemFactory {
                 description: "Drill",
                 rentDuration: ofDays(5),
                 account: accountOf(1))
-        def order = new Order(item, borrowerId)
+        def order = new Order(item, borrower)
         order.id = 1L
         item.addOrder(order)
         item

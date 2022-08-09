@@ -1,5 +1,6 @@
 package com.fiuba.rent_app.configuration
 
+import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
 import com.fiuba.rent_app.domain.order.service.OrderService
@@ -18,10 +19,14 @@ class OrderBeanDefinition {
     }
 
     @Bean
-    OrderService orderService(JpaItemRepository itemRepository, JpaOrderRepository jpaOrderRepository) {
+    OrderService orderService(
+            JpaItemRepository itemRepository,
+            JpaOrderRepository jpaOrderRepository,
+            JpaAccountRepository accountRepository) {
         return new OrderServiceAdapter(
                 itemRepository: itemRepository,
-                orderRepository: jpaOrderRepository
+                orderRepository: jpaOrderRepository,
+                accountRepository: accountRepository
         )
     }
 }

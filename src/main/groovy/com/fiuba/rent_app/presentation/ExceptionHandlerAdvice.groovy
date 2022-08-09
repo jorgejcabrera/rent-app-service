@@ -1,12 +1,12 @@
 package com.fiuba.rent_app.presentation
 
-import com.fiuba.rent_app.domain.item.EmptyItemPriceException
-import com.fiuba.rent_app.domain.item.EmptyItemTitleException
-import com.fiuba.rent_app.domain.item.InvalidRentDurationException
-import com.fiuba.rent_app.domain.item.service.ItemLenderDoesNotExistException
-import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
-import com.fiuba.rent_app.domain.order.builder.exception.ItemIsNotAvailableForOrderingException
-import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
+import com.fiuba.rent_app.domain.item.exception.EmptyItemPriceException
+import com.fiuba.rent_app.domain.item.exception.EmptyItemTitleException
+import com.fiuba.rent_app.domain.item.exception.InvalidRentDurationException
+import com.fiuba.rent_app.domain.item.exception.ItemLenderDoesNotExistException
+import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
+import com.fiuba.rent_app.domain.order.exception.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.exception.ItemNotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -47,11 +47,11 @@ class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(errorCode: "item_not_available", message: exception.message))
     }
 
-    @ExceptionHandler(InvalidRenterException.class)
-    ResponseEntity<ErrorResponse> handle(InvalidRenterException exception) {
+    @ExceptionHandler(InvalidCallerException.class)
+    ResponseEntity<ErrorResponse> handle(InvalidCallerException exception) {
         return ResponseEntity
                 .status(PRECONDITION_FAILED)
-                .body(new ErrorResponse(errorCode: "invalid_renter", message: exception.message))
+                .body(new ErrorResponse(errorCode: "invalid_caller", message: exception.message))
     }
 
     @ExceptionHandler(ItemLenderDoesNotExistException.class)

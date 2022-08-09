@@ -1,6 +1,10 @@
 package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.domain.account.Account
+import com.fiuba.rent_app.domain.item.exception.EmptyItemPriceException
+import com.fiuba.rent_app.domain.item.exception.EmptyItemTitleException
+import com.fiuba.rent_app.domain.item.exception.InvalidRentDurationException
+import com.fiuba.rent_app.domain.item.exception.ItemNotRentedException
 import com.fiuba.rent_app.domain.order.Order
 
 import javax.persistence.*
@@ -93,6 +97,7 @@ class Item {
         }
     }
 
+    //Boolean hasAnExpired
 
     Boolean canBeRented() {
         !this.isBeingUsed()
@@ -115,12 +120,11 @@ class Item {
         this.rentDuration = rentDuration
         this.price = price
     }
-
-    // TODO el rent day tiene que se parte de la orden no del item
+    
     void free() {
         Order order = this.orders.find { it.isOpen() }
         if (order == null) {
-            throw new ItemNotRentedException("The item ${this.id} is not being used")
+            throw new ItemNotRentedException("The item ${this.id} is not rented by anyone")
         }
         order.finish()
     }

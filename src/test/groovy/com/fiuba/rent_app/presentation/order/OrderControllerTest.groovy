@@ -3,9 +3,9 @@ package com.fiuba.rent_app.presentation.order
 import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.configuration.OrderBeanDefinition
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
-import com.fiuba.rent_app.domain.order.builder.exception.ItemIsNotAvailableForOrderingException
-import com.fiuba.rent_app.domain.order.service.ItemNotFoundException
+import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
+import com.fiuba.rent_app.domain.order.exception.ItemIsNotAvailableForOrderingException
+import com.fiuba.rent_app.domain.order.exception.ItemNotFoundException
 import com.fiuba.rent_app.domain.order.service.OrderService
 import com.fiuba.rent_app.presentation.ExceptionHandlerAdvice
 import com.fiuba.rent_app.presentation.order.response.OrderHttpResponseFactory
@@ -141,7 +141,7 @@ class OrderControllerTest {
     }
 
     void givenAnItemWithAnInvalidBorrower() {
-        whenever(orderService.createFor(any(), any())).thenThrow(new InvalidRenterException("The borrower can't be the owner of the item"))
+        whenever(orderService.createFor(any(), any())).thenThrow(new InvalidCallerException("The borrower can't be the owner of the item"))
     }
 }
 

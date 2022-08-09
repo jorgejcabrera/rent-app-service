@@ -1,7 +1,9 @@
 package com.fiuba.rent_app.domain.order
 
+import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
-import com.fiuba.rent_app.domain.order.builder.exception.InvalidRenterException
+import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
+import com.fiuba.rent_app.domain.order.exception.OrderAlreadyFinishedException
 
 import javax.persistence.*
 import java.time.LocalDateTime
@@ -43,16 +45,16 @@ class Order {
     @Column(name = "rent_day")
     private LocalDateTime rentDay
 
-    Order(Item item, Long borrowerId) {
+    Order(Item item, Account borrowerId) {
         this.lender = item.lenderId
-        this.borrower = borrowerId
+        this.borrower = borrowerId.id
         this.createdAt = now()
         this.item = item
         this.status = OPEN
 
         this.rentDay = now()
         if (!this.isValid()) {
-            throw new InvalidRenterException("The borrower ${this.getBorrower()} can't be the owner of the ${this.getItem().getId()} item")
+            throw new InvalidCallerException("The borrower ${this.getBorrower()} can't be the owner of the ${this.getItem().getId()} item")
         }
     }
 

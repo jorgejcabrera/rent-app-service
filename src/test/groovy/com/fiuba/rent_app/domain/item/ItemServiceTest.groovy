@@ -4,9 +4,10 @@ import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
+import com.fiuba.rent_app.domain.item.exception.InvalidLenderIdException
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.item.service.ItemServiceImpl
-import com.fiuba.rent_app.domain.order.OrderAlreadyFinishedException
+import com.fiuba.rent_app.domain.order.exception.OrderAlreadyFinishedException
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 import org.jetbrains.annotations.NotNull

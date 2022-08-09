@@ -1,4 +1,4 @@
-package com.fiuba.rent_app.domain.item
+package com.fiuba.rent_app.domain.item.exception
 
 
 class EmptyItemTitleException extends RuntimeException {

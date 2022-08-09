@@ -1,4 +1,4 @@
-package com.fiuba.rent_app.domain.order.builder.exception
+package com.fiuba.rent_app.domain.order.exception
 
 class ItemIsNotAvailableForOrderingException extends RuntimeException {
 
