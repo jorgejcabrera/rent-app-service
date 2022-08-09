@@ -1,6 +1,7 @@
 package com.fiuba.rent_app.domain.order
 
 import com.fiuba.rent_app.domain.account.Account
+import com.fiuba.rent_app.domain.account.AccountWithDebtException
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
 import com.fiuba.rent_app.domain.order.exception.OrderAlreadyFinishedException
@@ -56,7 +57,7 @@ class Order {
             throw new InvalidCallerException("The borrower ${this.getBorrower()} can't be the owner of the ${this.getItem().getId()} item")
         }
         if (borrower.hasDebt()) {
-            throw new InvalidCallerException("The borrower ${this.getBorrower()} has items to be return pending")
+            throw new AccountWithDebtException("The borrower ${this.getBorrower()} has items pending to be return")
         }
     }
 

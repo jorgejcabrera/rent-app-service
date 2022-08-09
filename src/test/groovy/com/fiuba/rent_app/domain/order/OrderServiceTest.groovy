@@ -4,6 +4,7 @@ import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
+import com.fiuba.rent_app.domain.account.AccountWithDebtException
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
 import com.fiuba.rent_app.domain.order.exception.ItemIsNotAvailableForOrderingException
@@ -58,7 +59,7 @@ class OrderServiceTest {
         givenAnAvailableItem()
 
         // WHEN
-        assertThrows(InvalidCallerException.class) {
+        assertThrows(AccountWithDebtException.class) {
             service.createFor(itemId, DEBTOR.id)
         }
     }

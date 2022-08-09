@@ -1,6 +1,7 @@
 package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.domain.account.Account
+import com.fiuba.rent_app.domain.account.AccountWithDebtException
 import com.fiuba.rent_app.domain.item.exception.EmptyItemPriceException
 import com.fiuba.rent_app.domain.item.exception.EmptyItemTitleException
 import com.fiuba.rent_app.domain.item.exception.InvalidRentDurationException
@@ -119,6 +120,9 @@ class Item {
     }
 
     void republish(BigDecimal price, Duration rentDuration) {
+        if (this.account.hasDebt()) {
+            throw new AccountWithDebtException("Before publishing it again, return all the items")
+        }
         this.finishAllOrders()
         this.rentDuration = rentDuration
         this.price = price
