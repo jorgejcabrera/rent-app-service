@@ -4,7 +4,7 @@ import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
-import com.fiuba.rent_app.domain.item.exception.InvalidLenderIdException
+import com.fiuba.rent_app.domain.item.exception.InvalidBorrowerIdException
 import com.fiuba.rent_app.domain.item.exception.ItemInUseException
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.item.service.ItemServiceImpl
@@ -138,7 +138,7 @@ class ItemServiceTest {
         givenARentedItem(2, itemId)
 
         // WHEN
-        assertThrows(InvalidLenderIdException.class) {
+        assertThrows(InvalidBorrowerIdException.class) {
             service.free(itemId, borrowerId)
         }
     }

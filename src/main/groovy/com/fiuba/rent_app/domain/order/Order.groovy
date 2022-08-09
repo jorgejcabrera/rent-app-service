@@ -53,6 +53,7 @@ class Order {
 
     Order(Item item, Account borrower) {
         this.lender = item.lenderId
+        this.account = borrower
         this.borrower = borrower.id
         this.createdAt = now()
         this.item = item

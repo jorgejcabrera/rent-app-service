@@ -6,7 +6,8 @@ import com.fiuba.rent_app.domain.item.exception.EmptyItemPriceException
 import com.fiuba.rent_app.domain.item.exception.EmptyItemTitleException
 import com.fiuba.rent_app.domain.item.exception.InvalidRentDurationException
 import com.fiuba.rent_app.domain.item.exception.ItemInUseException
-import com.fiuba.rent_app.domain.item.exception.ItemNotRentedException
+import com.fiuba.rent_app.domain.item.exception.ItemNotInUseException
+
 import com.fiuba.rent_app.domain.order.Order
 
 import javax.persistence.*
@@ -101,7 +102,7 @@ class Item {
     }
 
     Boolean hasExpiredOrders() {
-        this.orders.any { it.expireRentDay() < LocalDateTime.now() && it.isOpen()}
+        this.orders.any { it.expireRentDay() < LocalDateTime.now() && it.isOpen() }
     }
 
     Boolean canBeRented() {
@@ -132,10 +133,10 @@ class Item {
     }
 
     void free() {
-        Order order = this.orders.find { it.isOpen() }
-        if (order == null) {
-            throw new ItemNotRentedException("The item ${this.id} is not rented by anyone")
+        if (!this.isBeingUsed()) {
+            throw new ItemNotInUseException("The item ${this.id} is not rented by anyone")
         }
+        Order order = this.orders.find { it.isOpen() }
         order.finish()
     }
 

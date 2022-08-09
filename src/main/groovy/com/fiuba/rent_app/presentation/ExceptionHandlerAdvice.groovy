@@ -1,11 +1,7 @@
 package com.fiuba.rent_app.presentation
 
 import com.fiuba.rent_app.domain.account.AccountWithDebtException
-import com.fiuba.rent_app.domain.item.exception.EmptyItemPriceException
-import com.fiuba.rent_app.domain.item.exception.EmptyItemTitleException
-import com.fiuba.rent_app.domain.item.exception.InvalidRentDurationException
-import com.fiuba.rent_app.domain.item.exception.ItemInUseException
-import com.fiuba.rent_app.domain.item.exception.ItemLenderDoesNotExistException
+import com.fiuba.rent_app.domain.item.exception.*
 import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
 import com.fiuba.rent_app.domain.order.exception.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.exception.ItemNotFoundException
@@ -20,6 +16,20 @@ import static org.springframework.http.HttpStatus.PRECONDITION_FAILED
 @ControllerAdvice
 class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
+
+    @ExceptionHandler(InvalidBorrowerIdException.class)
+    ResponseEntity<ErrorResponse> handle(InvalidBorrowerIdException exception) {
+        return ResponseEntity
+                .status(PRECONDITION_FAILED)
+                .body(new ErrorResponse(errorCode: "invalid_borrower_exception", message: exception.message))
+    }
+
+    @ExceptionHandler(ItemNotInUseException.class)
+    ResponseEntity<ErrorResponse> handle(ItemNotInUseException exception) {
+        return ResponseEntity
+                .status(PRECONDITION_FAILED)
+                .body(new ErrorResponse(errorCode: "item_not_in_use", message: exception.message))
+    }
 
     @ExceptionHandler(ItemInUseException.class)
     ResponseEntity<ErrorResponse> handle(ItemInUseException exception) {
