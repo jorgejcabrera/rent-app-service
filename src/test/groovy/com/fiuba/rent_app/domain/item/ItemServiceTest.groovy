@@ -5,9 +5,9 @@ import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.exception.InvalidLenderIdException
+import com.fiuba.rent_app.domain.item.exception.ItemInUseException
 import com.fiuba.rent_app.domain.item.service.ItemService
 import com.fiuba.rent_app.domain.item.service.ItemServiceImpl
-import com.fiuba.rent_app.domain.order.exception.OrderAlreadyFinishedException
 import com.fiuba.rent_app.presentation.item.ItemCreationBody
 import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 import org.jetbrains.annotations.NotNull
@@ -79,17 +79,13 @@ class ItemServiceTest {
     }
 
     @Test
-    void "when republish an item with orders then all of those must be closed"() {
+    void "when republish an item with an open order, then an exception must be thrown"() {
         // GIVEN
         givenARentedItem()
         ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
 
         // WHEN
-        def item = service.republish(body, 1)
-
-        // THEN
-        Assertions.assertFalse(item.isBeingUsed())
-        assertTrue(item.orders.find { it.isOpen() } == null)
+        assertThrows(ItemInUseException.class) { service.update(body, 1) }
     }
 
     @Test
@@ -99,7 +95,7 @@ class ItemServiceTest {
         ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
 
         // WHEN
-        def item = service.republish(body, 1)
+        def item = service.update(body, 1)
 
         // THEN
         Assertions.assertFalse(item.isBeingUsed())
@@ -107,15 +103,17 @@ class ItemServiceTest {
     }
 
     @Test
-    void "when republish an item associated with an order already closed, then an exception must be thrown"() {
+    void "when republish an item associated with an order already closed, then it must be available"() {
         // GIVEN
         givenAnItemWithAnOrderFinished()
         ItemRepublishingBody body = new ItemRepublishingBody(price: 10.0, rentingDays: 2)
 
         // WHEN
-        assertThrows(OrderAlreadyFinishedException.class) {
-            service.republish(body, 1)
-        }
+        Item item = service.update(body, 1)
+
+        // THEN
+        Assertions.assertFalse(item.isBeingUsed())
+
     }
 
     @Test
@@ -166,7 +164,7 @@ class ItemServiceTest {
 
     def givenSomeSavedItems(Long borrowerId = 2) {
         List<Item> items = [
-                TestItemFactory.rentedDrillWith(),
+                TestItemFactory.rentedDrillBy(),
                 new Item(title: "play station 5"),
                 new Item(title: "computadora")
         ]
@@ -174,7 +172,7 @@ class ItemServiceTest {
     }
 
     void givenARentedItem(Long borrowerId = 2, Long itemId = 1) {
-        def rentedItem = TestItemFactory.rentedDrillWith(itemId)
+        def rentedItem = TestItemFactory.rentedDrillBy(itemId)
         whenever(itemRepository.findById(any())).thenReturn(Optional.of(rentedItem))
     }
 

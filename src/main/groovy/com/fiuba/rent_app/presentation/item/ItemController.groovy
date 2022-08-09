@@ -37,7 +37,7 @@ class ItemController {
             @PathVariable("item_id") Long itemId,
             @RequestBody ItemRepublishingBody body
     ) {
-        Item item = itemService.republish(body, itemId)
+        Item item = itemService.update(body, itemId)
         return responseFactory.from(item)
     }
 

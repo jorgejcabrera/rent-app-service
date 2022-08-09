@@ -38,19 +38,19 @@ class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    Item republish(ItemRepublishingBody body, Long itemId) {
+    Item update(ItemRepublishingBody body, Long itemId) {
         def item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("The item $itemId does not exist.") }
-        item.republish(body.price, ofDays(body.rentingDays))
+        item.update(body.price, ofDays(body.rentingDays))
         return item
     }
 
     @Override
-    Item free(Long itemId, Long lenderId) {
+    Item free(Long itemId, Long borrowerId) {
         def item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("The item $itemId does not exist.") }
-        if (!item.isBeingUsedBy(lenderId)) {
-            throw new InvalidLenderIdException("The item $item could not be returning by $lenderId")
+        if (!item.isBeingUsedBy(borrowerId)) {
+            throw new InvalidLenderIdException("The item $item could not be returning by $borrowerId")
         }
         item.free()
         itemRepository.save(item)

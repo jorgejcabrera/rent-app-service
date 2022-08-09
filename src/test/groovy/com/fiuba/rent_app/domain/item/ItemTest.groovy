@@ -1,8 +1,11 @@
 package com.fiuba.rent_app.domain.item
 
 import com.fiuba.rent_app.TestItemFactory
+import com.fiuba.rent_app.domain.item.exception.ItemInUseException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+
+import java.time.Duration
 
 class ItemTest {
 
@@ -23,5 +26,16 @@ class ItemTest {
 
         // THEN
         Assertions.assertFalse(item.hasExpiredOrders())
+    }
+
+    @Test
+    void "when an item is being used, then it can not be modified"() {
+        // GIVEN
+        Item rentedItem = TestItemFactory.rentedDrillBy()
+
+        // THEN
+        Assertions.assertThrows(ItemInUseException.class) {
+            rentedItem.update(BigDecimal.valueOf(1), Duration.ofDays(1))
+        }
     }
 }

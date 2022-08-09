@@ -124,7 +124,7 @@ class OrderControllerTest {
     }
 
     private static Order givenAnOrder() {
-        def item = TestItemFactory.rentedDrillWith()
+        def item = TestItemFactory.rentedDrillBy()
         return item.orders[0]
     }
 

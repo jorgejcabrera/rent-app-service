@@ -144,7 +144,7 @@ class OrderServiceTest {
     }
 
     void givenARentedItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(TestItemFactory.rentedDrillWith()))
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(TestItemFactory.rentedDrillBy()))
     }
 
     Item givenAnAvailableItem() {

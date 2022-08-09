@@ -5,6 +5,7 @@ import com.fiuba.rent_app.domain.account.AccountWithDebtException
 import com.fiuba.rent_app.domain.item.exception.EmptyItemPriceException
 import com.fiuba.rent_app.domain.item.exception.EmptyItemTitleException
 import com.fiuba.rent_app.domain.item.exception.InvalidRentDurationException
+import com.fiuba.rent_app.domain.item.exception.ItemInUseException
 import com.fiuba.rent_app.domain.item.exception.ItemNotRentedException
 import com.fiuba.rent_app.domain.order.Order
 
@@ -119,11 +120,13 @@ class Item {
         this.orders.add(order)
     }
 
-    void republish(BigDecimal price, Duration rentDuration) {
+    void update(BigDecimal price, Duration rentDuration) {
         if (this.account.hasDebt()) {
             throw new AccountWithDebtException("Before publishing it again, return all the items")
         }
-        this.finishAllOrders()
+        if (this.isBeingUsed()) {
+            throw new ItemInUseException("The item is being used")
+        }
         this.rentDuration = rentDuration
         this.price = price
     }

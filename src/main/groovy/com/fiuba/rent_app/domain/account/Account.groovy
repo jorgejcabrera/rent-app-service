@@ -21,6 +21,7 @@ class Account {
     @OneToMany(mappedBy = "account")
     private Set<Item> items
 
+    //TODO MAL las ordenes son de la cuenta no de los items que se publican
     Boolean hasDebt() {
         return this.items.any { it.hasExpiredOrders() }
     }

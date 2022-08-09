@@ -45,7 +45,7 @@ class TestItemFactory {
         item
     }
 
-    static Item rentedDrillWith(Long itemId = 1) {
+    static Item rentedDrillBy(Long itemId = 1) {
         def item = new Item(
                 id: itemId,
                 description: "Drill",
