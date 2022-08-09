@@ -13,7 +13,7 @@ class Account {
     @Id
     @GeneratedValue(strategy = AUTO)
     @Column(name = "id")
-    private Long id
+    Long id
 
     @Column(name = "email")
     private String email
@@ -21,6 +21,9 @@ class Account {
     @OneToMany(mappedBy = "account")
     private Set<Item> items
 
+    Boolean hasDebt() {
+        return this.items.any { it.hasExpiredOrders() }
+    }
 
     Long getId() {
         return this.id

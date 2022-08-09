@@ -45,16 +45,18 @@ class Order {
     @Column(name = "rent_day")
     private LocalDateTime rentDay
 
-    Order(Item item, Account borrowerId) {
+    Order(Item item, Account borrower) {
         this.lender = item.lenderId
-        this.borrower = borrowerId.id
+        this.borrower = borrower.id
         this.createdAt = now()
         this.item = item
         this.status = OPEN
-
         this.rentDay = now()
         if (!this.isValid()) {
             throw new InvalidCallerException("The borrower ${this.getBorrower()} can't be the owner of the ${this.getItem().getId()} item")
+        }
+        if (borrower.hasDebt()) {
+            throw new InvalidCallerException("The borrower ${this.getBorrower()} has items to be return pending")
         }
     }
 

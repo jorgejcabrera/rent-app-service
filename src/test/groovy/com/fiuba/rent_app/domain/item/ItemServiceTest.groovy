@@ -166,7 +166,7 @@ class ItemServiceTest {
 
     def givenSomeSavedItems(Long borrowerId = 2) {
         List<Item> items = [
-                TestItemFactory.rentedDrillWith(borrowerId),
+                TestItemFactory.rentedDrillWith(),
                 new Item(title: "play station 5"),
                 new Item(title: "computadora")
         ]
@@ -174,7 +174,7 @@ class ItemServiceTest {
     }
 
     void givenARentedItem(Long borrowerId = 2, Long itemId = 1) {
-        def rentedItem = TestItemFactory.rentedDrillWith(borrowerId, itemId)
+        def rentedItem = TestItemFactory.rentedDrillWith(itemId)
         whenever(itemRepository.findById(any())).thenReturn(Optional.of(rentedItem))
     }
 
@@ -184,7 +184,7 @@ class ItemServiceTest {
     }
 
     void givenAnItemWithAnOrderFinished() {
-        def itemAlreadyFinished = TestItemFactory.itemAlreadyFinished(1)
+        def itemAlreadyFinished = TestItemFactory.withOrderAlreadyFinished(1)
         whenever(itemRepository.findById(any())).thenReturn(Optional.of(itemAlreadyFinished))
     }
 }

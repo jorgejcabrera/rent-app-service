@@ -9,6 +9,7 @@ import com.fiuba.rent_app.domain.order.Order
 
 import javax.persistence.*
 import java.time.Duration
+import java.time.LocalDateTime
 
 import static java.time.Duration.ofDays
 import static javax.persistence.GenerationType.AUTO
@@ -97,7 +98,9 @@ class Item {
         }
     }
 
-    //Boolean hasAnExpired
+    Boolean hasExpiredOrders() {
+        this.orders.any { it.expireRentDay() < LocalDateTime.now() && it.isOpen()}
+    }
 
     Boolean canBeRented() {
         !this.isBeingUsed()
@@ -120,7 +123,7 @@ class Item {
         this.rentDuration = rentDuration
         this.price = price
     }
-    
+
     void free() {
         Order order = this.orders.find { it.isOpen() }
         if (order == null) {

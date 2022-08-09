@@ -1,39 +1,57 @@
 package com.fiuba.rent_app
 
-import com.fiuba.rent_app.domain.account.Account
+
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.Order
 import com.fiuba.rent_app.domain.order.OrderStatus
 
 import java.time.Duration
+import java.time.LocalDateTime
 
+import static com.fiuba.rent_app.AccountFactory.*
 import static java.math.BigDecimal.valueOf
 import static java.time.Duration.ofDays
 
 class TestItemFactory {
 
 
-    static Account borrower = new Account(id: 2, email: "cabrerajjorge@gmail.com")
+    static Item withExpiredOrderBy(Long debtorId = BORROWER.id) {
+        def item = new Item(
+                id: 1,
+                description: "Drill",
+                rentDuration: ofDays(5),
+                account: LENDER)
+        def order = new Order(
+                id: 1,
+                item: item,
+                rentDay: LocalDateTime.now().minusDays(10),
+                status: OrderStatus.OPEN,
+                borrower: debtorId
+        )
+        item.addOrder(order)
+        item
+    }
 
-    static Item itemAlreadyFinished(Long lender) {
+    static Item withOrderAlreadyFinished(Long lender) {
         def item = new Item(
                 description: "Drill",
                 rentDuration: ofDays(5),
-                account: accountOf(lender))
-        def order = new Order(item, borrower)
+                account: of(lender))
+        def order = new Order(item, BORROWER)
         order.id = 1L
+        order.rentDay = LocalDateTime.now().minusDays(10)
         order.status = OrderStatus.FINISHED
         item.addOrder(order)
         item
     }
 
-    static Item rentedDrillWith(Long borrowerId, Long itemId = 1) {
+    static Item rentedDrillWith(Long itemId = 1) {
         def item = new Item(
                 id: itemId,
                 description: "Drill",
                 rentDuration: ofDays(5),
-                account: accountOf(1))
-        def order = new Order(item, borrower)
+                account: of(1))
+        def order = new Order(item, BORROWER)
         order.id = 1L
         item.addOrder(order)
         item
@@ -47,7 +65,7 @@ class TestItemFactory {
                 assuranceCost: valueOf(1),
                 price: valueOf(10L),
                 description: "Drill",
-                account: accountOf(lender))
+                account: of(lender))
     }
 
     static Item availablePS5(Long lender) {
@@ -58,10 +76,8 @@ class TestItemFactory {
                 assuranceCost: valueOf(1),
                 price: valueOf(500L),
                 description: "PS5",
-                account: accountOf(lender))
+                account: of(lender))
     }
 
-    private static Account accountOf(Long accountId) {
-        return new Account(id: accountId, email: "jocabrera@fi.uba.com.ar")
-    }
+
 }

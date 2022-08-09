@@ -4,7 +4,6 @@ import com.fiuba.rent_app.TestItemFactory
 import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.datasource.order.JpaOrderRepository
-import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
 import com.fiuba.rent_app.domain.order.exception.ItemIsNotAvailableForOrderingException
@@ -19,6 +18,7 @@ import org.mockito.MockitoAnnotations
 import java.time.Duration
 import java.time.LocalDateTime
 
+import static com.fiuba.rent_app.AccountFactory.*
 import static com.nhaarman.mockitokotlin2.OngoingStubbingKt.whenever
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.ArgumentMatchers.any
@@ -37,7 +37,6 @@ class OrderServiceTest {
     private OrderService service
 
     Long itemId = 1L
-    Long borrowerId = 2L
     Long lenderId = 1L
     Item drill = TestItemFactory.availableDrillWith(lenderId)
     Duration rentDuration = drill.rentDuration
@@ -53,13 +52,26 @@ class OrderServiceTest {
     }
 
     @Test
+    void "when a debtor try to create an order, then an exception must be thrown"() {
+        // GIVEN
+        whenever(accountRepository.findById(any())).thenReturn(Optional.of(DEBTOR))
+        givenAnAvailableItem()
+
+        // WHEN
+        assertThrows(InvalidCallerException.class) {
+            service.createFor(itemId, DEBTOR.id)
+        }
+    }
+
+
+    @Test
     void "when creates an order, then expired rent day must be set ok"() {
         // GIVEN
-        whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: borrowerId, email: "cabrerajjorge@gmail.com")))
+        whenever(accountRepository.findById(any())).thenReturn(Optional.of(BORROWER))
         Item item = givenAnAvailableItem()
 
         // WHEN
-        Order order = service.createFor(itemId, borrowerId)
+        Order order = service.createFor(itemId, BORROWER.id)
 
         // THEN
         assertNotNull(order.expireRentDay())
@@ -70,32 +82,32 @@ class OrderServiceTest {
     @Test
     void "when creates an order for a nonexistent item then it must throw an exception"() {
         // GIVEN
-        whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: borrowerId, email: "cabrerajjorge@gmail.com")))
+        whenever(accountRepository.findById(any())).thenReturn(Optional.of(BORROWER))
         givenAnNoneExistentItem()
 
         // THEN
-        assertThrows(ItemNotFoundException.class) { service.createFor(itemId, borrowerId) }
+        assertThrows(ItemNotFoundException.class) { service.createFor(itemId, BORROWER.id) }
     }
 
     @Test
     void "when try to order a rented item then it must throw an exception"() {
         // GIVEN
-        whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: borrowerId, email: "cabrerajjorge@gmail.com")))
+        whenever(accountRepository.findById(any())).thenReturn(Optional.of(BORROWER))
         givenARentedItem()
 
         // THEN
-        assertThrows(ItemIsNotAvailableForOrderingException.class) { service.createFor(itemId, borrowerId) }
+        assertThrows(ItemIsNotAvailableForOrderingException.class) { service.createFor(itemId, BORROWER.id) }
     }
 
     @Test
     void "when ordering an available item then a valid order must be returned"() {
         // GIVEN
-        whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: borrowerId, email: "cabrerajjorge@gmail.com")))
+        whenever(accountRepository.findById(any())).thenReturn(Optional.of(BORROWER))
         givenAnAvailableItem()
         givenAnOrderSuccessfullySaved()
 
         // WHEN
-        Order createdOrder = service.createFor(itemId, borrowerId)
+        Order createdOrder = service.createFor(itemId, BORROWER.id)
 
         // THEN
         thenTheOrderWasSuccessfullyCreated(createdOrder)
@@ -104,12 +116,12 @@ class OrderServiceTest {
     @Test
     void "when ordering an available item then the creation date must be indicated in the order info"() {
         // GIVEN
-        whenever(accountRepository.findById(any())).thenReturn(Optional.of(new Account(id: borrowerId, email: "cabrerajjorge@gmail.com")))
+        whenever(accountRepository.findById(any())).thenReturn(Optional.of(BORROWER))
         givenAnAvailableItem()
         givenAnOrderSuccessfullySaved()
 
         // WHEN
-        Order createdOrder = service.createFor(itemId, borrowerId)
+        Order createdOrder = service.createFor(itemId, BORROWER.id)
 
         // THEN
         thenTheExpiredRentDateWasSuccessfullyCalculated(createdOrder)
@@ -122,7 +134,7 @@ class OrderServiceTest {
 
         // WHEN
         assertThrows(InvalidCallerException.class) {
-            service.createFor(itemId, lenderId)
+            service.createFor(itemId, LENDER.id)
         }
     }
 
@@ -131,7 +143,7 @@ class OrderServiceTest {
     }
 
     void givenARentedItem() {
-        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(TestItemFactory.rentedDrillWith(borrowerId)))
+        whenever(itemRepository.findById(itemId)).thenReturn(Optional.of(TestItemFactory.rentedDrillWith()))
     }
 
     Item givenAnAvailableItem() {
@@ -151,6 +163,6 @@ class OrderServiceTest {
     }
 
     void givenAnOrderSuccessfullySaved() {
-        whenever(orderRepository.save(any())).thenReturn(new Order(drill, TestItemFactory.borrower))
+        whenever(orderRepository.save(any())).thenReturn(new Order(drill, BORROWER))
     }
 }
