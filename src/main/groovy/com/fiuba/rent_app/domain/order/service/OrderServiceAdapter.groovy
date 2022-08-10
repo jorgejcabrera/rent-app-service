@@ -24,9 +24,6 @@ class OrderServiceAdapter implements OrderService {
                 .orElseThrow { throw new InvalidCallerException("The borrower $borrowerId does not exist") }
         Item item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
-        if (!item.canBeRented()) {
-            throw new ItemIsNotAvailableForOrderingException("The item ${item.getId()} is not avilable.")
-        }
         Order order = new Order(item, borrower)
         borrower.addOrder(order)
         orderRepository.save(order)

@@ -4,6 +4,7 @@ import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.account.AccountWithDebtException
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
+import com.fiuba.rent_app.domain.order.exception.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.exception.OrderAlreadyFinishedException
 
 import javax.persistence.*
@@ -49,6 +50,9 @@ class Order {
     private LocalDateTime rentDay
 
     Order(Item item, Account borrower) {
+        if (!item.canBeRented()) {
+            throw new ItemIsNotAvailableForOrderingException("The item ${item.getId()} is not avilable.")
+        }
         this.account = borrower
         this.createdAt = now()
         this.item = item
