@@ -9,8 +9,7 @@ import com.fiuba.rent_app.domain.order.exception.OrderAlreadyFinishedException
 import javax.persistence.*
 import java.time.LocalDateTime
 
-import static com.fiuba.rent_app.domain.order.OrderStatus.FINISHED
-import static com.fiuba.rent_app.domain.order.OrderStatus.OPEN
+import static com.fiuba.rent_app.domain.order.Order.OrderStatus.*
 import static java.time.LocalDateTime.now
 import static javax.persistence.CascadeType.ALL
 import static javax.persistence.EnumType.STRING
@@ -19,6 +18,11 @@ import static javax.persistence.GenerationType.AUTO
 @Entity(name = "orders")
 @Table(name = "orders")
 class Order {
+
+    enum OrderStatus {
+        FINISHED,
+        OPEN
+    }
 
     @Id
     @GeneratedValue(strategy = AUTO)
@@ -94,5 +98,6 @@ class Order {
         }
         this.status = FINISHED
     }
+
 
 }

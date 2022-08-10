@@ -2,9 +2,10 @@ package com.fiuba.rent_app
 
 import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.OrderStatus
 
 import java.time.LocalDateTime
+
+import static com.fiuba.rent_app.domain.order.Order.OrderStatus.*
 
 class AccountFactory {
 
@@ -20,7 +21,7 @@ class AccountFactory {
                     id: 1,
                     item: TestItemFactory.withExpiredOrderBy(debtorId),
                     rentDay: LocalDateTime.now().minusDays(10),
-                    status: OrderStatus.OPEN,
+                    status: OPEN,
             )]
     )
 

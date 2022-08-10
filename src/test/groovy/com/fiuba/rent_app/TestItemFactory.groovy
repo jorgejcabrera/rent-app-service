@@ -3,12 +3,12 @@ package com.fiuba.rent_app
 
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.Order
-import com.fiuba.rent_app.domain.order.OrderStatus
 
 import java.time.Duration
 import java.time.LocalDateTime
 
 import static com.fiuba.rent_app.AccountFactory.*
+import static com.fiuba.rent_app.domain.order.Order.OrderStatus.*
 import static java.math.BigDecimal.valueOf
 import static java.time.Duration.ofDays
 
@@ -25,7 +25,7 @@ class TestItemFactory {
                 id: 1,
                 item: item,
                 rentDay: LocalDateTime.now().minusDays(10),
-                status: OrderStatus.OPEN,
+                status: OPEN,
 
         )
         item.addOrder(order)
@@ -40,7 +40,7 @@ class TestItemFactory {
         def order = new Order(item, BORROWER)
         order.id = 1L
         order.rentDay = LocalDateTime.now().minusDays(10)
-        order.status = OrderStatus.FINISHED
+        order.status = FINISHED
         item.addOrder(order)
         item
     }
