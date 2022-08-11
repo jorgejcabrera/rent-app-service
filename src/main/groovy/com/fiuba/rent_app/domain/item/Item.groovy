@@ -4,6 +4,7 @@ import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.account.AccountWithDebtException
 import com.fiuba.rent_app.domain.item.exception.EmptyItemPriceException
 import com.fiuba.rent_app.domain.item.exception.EmptyItemTitleException
+import com.fiuba.rent_app.domain.item.exception.InvalidBorrowerIdException
 import com.fiuba.rent_app.domain.item.exception.InvalidRentDurationException
 import com.fiuba.rent_app.domain.item.exception.ItemInUseException
 import com.fiuba.rent_app.domain.item.exception.ItemNotInUseException
@@ -132,7 +133,10 @@ class Item {
         this.price = price
     }
 
-    void free() {
+    void free(long borrowerId) {
+        if (this.isBeingUsed() && !this.isBeingUsedBy(borrowerId)) {
+            throw new InvalidBorrowerIdException("The item ${this.id} could not be returning by $borrowerId")
+        }
         if (!this.isBeingUsed()) {
             throw new ItemNotInUseException("The item ${this.id} is not rented by anyone")
         }

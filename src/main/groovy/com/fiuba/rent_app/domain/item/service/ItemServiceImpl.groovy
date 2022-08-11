@@ -3,7 +3,6 @@ package com.fiuba.rent_app.domain.item.service
 import com.fiuba.rent_app.datasource.account.JpaAccountRepository
 import com.fiuba.rent_app.datasource.item.JpaItemRepository
 import com.fiuba.rent_app.domain.account.Account
-import com.fiuba.rent_app.domain.item.exception.InvalidBorrowerIdException
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.item.exception.ItemLenderDoesNotExistException
 import com.fiuba.rent_app.domain.order.exception.ItemNotFoundException
@@ -12,7 +11,7 @@ import com.fiuba.rent_app.presentation.item.ItemRepublishingBody
 
 import java.util.stream.Collectors
 
-import static java.time.Duration.*
+import static java.time.Duration.ofDays
 
 class ItemServiceImpl implements ItemService {
 
@@ -49,10 +48,7 @@ class ItemServiceImpl implements ItemService {
     Item free(Long itemId, Long borrowerId) {
         def item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("The item $itemId does not exist.") }
-        if (item.isBeingUsed() && !item.isBeingUsedBy(borrowerId)) {
-            throw new InvalidBorrowerIdException("The item $item could not be returning by $borrowerId")
-        }
-        item.free()
+        item.free(borrowerId)
         itemRepository.save(item)
         item
     }
