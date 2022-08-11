@@ -7,7 +7,6 @@ import com.fiuba.rent_app.domain.account.Account
 import com.fiuba.rent_app.domain.item.Item
 import com.fiuba.rent_app.domain.order.Order
 import com.fiuba.rent_app.domain.order.exception.InvalidCallerException
-import com.fiuba.rent_app.domain.order.exception.ItemIsNotAvailableForOrderingException
 import com.fiuba.rent_app.domain.order.exception.ItemNotFoundException
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,8 +23,7 @@ class OrderServiceAdapter implements OrderService {
                 .orElseThrow { throw new InvalidCallerException("The borrower $borrowerId does not exist") }
         Item item = itemRepository.findById(itemId)
                 .orElseThrow { new ItemNotFoundException("Item $itemId does not exist") }
-        Order order = new Order(item, borrower)
-        borrower.addOrder(order)
+        Order order = borrower.rent(item)
         orderRepository.save(order)
         order
     }

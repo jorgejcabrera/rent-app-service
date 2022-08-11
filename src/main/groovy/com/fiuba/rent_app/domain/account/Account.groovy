@@ -27,14 +27,20 @@ class Account {
     private Set<Order> orders = new HashSet<Order>()
 
     Boolean hasDebt() {
-        return this.orders.any{ it.expireRentDay() < LocalDateTime.now() && it.isOpen()}
+        return this.orders.any { it.expireRentDay() < LocalDateTime.now() && it.isOpen() }
     }
 
     Long getId() {
         return this.id
     }
 
-    void addOrder(Order order) {
+    Order rent(Item item) {
+        Order order = new Order(item, this)
+        this.addOrder(order)
+        order
+    }
+
+    private void addOrder(Order order) {
         this.orders.add(order)
     }
 }
