@@ -89,7 +89,7 @@ class Item {
         rentDuration
     }
 
-    void validate() {
+    private void validate() {
         if (this.price == null) {
             throw new EmptyItemPriceException("Price must be not empty")
         }
